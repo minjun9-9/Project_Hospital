@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mainDAO">
+
+	<!-- 병원리스트 -->
+	<select id="getHospitalList" resultType="hospitalVO">
+		SELECT HP_ID, HP_NAME, HP_ADDRESS, HP_NUMBER, HP_REGION
+		FROM HOSPITAL
+	</select>
+	
+	<!-- 유저리스트 -->
+	<select id="getUserList" resultType="userVO">
+		SELECT * FROM USER_CLIENT
+	</select>
+	
+	<!-- 진료과 전체 리스트 -->
+	<select id="getDeptList" resultType="deptVO">
+		SELECT DEPT_ID, DEPT_NAME
+		FROM DEPT
+		ORDER BY DEPT_NAME
+	</select>
+	
+	<!-- 진료과 리스트 -->
+	<select id="getDeptListByHpId" resultType="deptVO">
+		SELECT DEPT_ID, DEPT_NAME
+		FROM DEPT
+		WHERE HP_ID = #{hpId}
+		ORDER BY DEPT_NAME
+	</select>
+	
+	<!-- 의사 리스트 -->
+	<select id="getHpMemberList" resultType="hpMemberVO">
+		SELECT *
+		FROM HP_MEMBER
+		WHERE DEPT_ID = #{deptId}
+		ORDER BY DR_NAME
+	</select>
+	
+	<!-- 진료의뢰 전체 리스트 -->
+	<select id="getReferralListAll" resultType="referralVO" parameterType="map">
+		SELECT * FROM(
+			SELECT ROWNUM AS RNUM, B.*
+			FROM(
+				SELECT R.REFER_ID
+				     , R.USER_NUM
+				     , (SELECT USER_NAME FROM USER_CLIENT WHERE USER_NUM=R.USER_NUM) AS USER_NAME   
+				     , (SELECT H.HP_NAME FROM HOSPITAL H, DEPT D, HP_MEMBER M WHERE H.HP_ID = D.HP_ID AND D.DEPT_ID = M.DEPT_ID AND M.DR_ID = R.S_DR_ID) AS S_HP_NAME
+				     , (SELECT D.DEPT_NAME FROM HP_MEMBER H, DEPT D WHERE H.DEPT_ID = D.DEPT_ID AND H.DR_ID = R.S_DR_ID) AS S_DEPT_NAME
+				     , R.S_DR_ID
+				     , (SELECT DR_NAME FROM HP_MEMBER WHERE DR_ID=R.S_DR_ID) AS S_DR_NAME     
+				     , (SELECT H.HP_NAME FROM HOSPITAL H, DEPT D, HP_MEMBER M WHERE H.HP_ID = D.HP_ID AND D.DEPT_ID = M.DEPT_ID AND M.DR_ID = R.R_DR_ID) AS R_HP_NAME
+				     , (SELECT D.DEPT_NAME FROM HP_MEMBER H, DEPT D WHERE H.DEPT_ID = D.DEPT_ID AND H.DR_ID = R.R_DR_ID) AS R_DEPT_NAME
+				     , R.R_DR_ID
+				     , (SELECT DR_NAME FROM HP_MEMBER WHERE DR_ID=R.R_DR_ID) AS R_DR_NAME     
+				     , R.REFER_CONTENT
+				     , R.RESULT_CONTENT
+				     , DECODE(R.RECEIVE_CHK, '1', '확인 전', '2', '진행 중', '3', '완료', '4', '취소') AS RECEIVE_CHK
+				     , TO_CHAR(R.CREATED_AT,'YYYY-mm-DD') AS CREATE_DATE
+				     , TO_CHAR(R.UPDATED_AT,'YYYY-mm-DD') AS UPDATE_DATE
+				     , R.FILEONE
+				     , R.FILETWO
+				     , R.FILETHREE
+				FROM REFERRAL R
+				ORDER BY R.CREATED_AT DESC) B)
+		WHERE RNUM BETWEEN #{begin} AND #{end}
+	</select>
+	
+	<!-- 받은 진료의뢰 리스트(의사id 검색) -->
+	<select id="getReferralList" resultType="referralVO" parameterType="map">
+		SELECT * FROM(
+			SELECT ROWNUM AS RNUM, B.*
+			FROM(
+				SELECT 
+                    R.REFER_ID,
+                    R.USER_NUM,
+                    (SELECT USER_NAME FROM USER_CLIENT WHERE USER_NUM = R.USER_NUM) AS USER_NAME,
+                    (SELECT H.HP_NAME FROM HOSPITAL H, DEPT D, HP_MEMBER M WHERE H.HP_ID = D.HP_ID AND D.DEPT_ID = M.DEPT_ID AND M.DR_ID = R.S_DR_ID) AS S_HP_NAME,
+                    (SELECT D.DEPT_NAME FROM HP_MEMBER H, DEPT D WHERE H.DEPT_ID = D.DEPT_ID AND H.DR_ID = R.S_DR_ID) AS S_DEPT_NAME,
+                    R.S_DR_ID,
+                    S_DR.DR_NAME AS S_DR_NAME, -- 조인된 S_DR_NAME
+                    (SELECT H.HP_NAME FROM HOSPITAL H, DEPT D, HP_MEMBER M WHERE H.HP_ID = D.HP_ID AND D.DEPT_ID = M.DEPT_ID AND M.DR_ID = R.R_DR_ID) AS R_HP_NAME,
+                    (SELECT D.DEPT_NAME FROM HP_MEMBER H, DEPT D WHERE H.DEPT_ID = D.DEPT_ID AND H.DR_ID = R.R_DR_ID) AS R_DEPT_NAME,
+                    R.R_DR_ID,
+                    R_DR.DR_NAME AS R_DR_NAME, -- 조인된 R_DR_NAME
+                    R.REFER_CONTENT,
+                    R.RESULT_CONTENT,
+                    DECODE(R.RECEIVE_CHK, '1', '확인 전', '2', '진행 중', '3', '완료', '4', '취소') AS RECEIVE_CHK,
+                    TO_CHAR(R.CREATED_AT,'YYYY-mm-DD') AS CREATE_DATE,
+                    TO_CHAR(R.UPDATED_AT,'YYYY-mm-DD') AS UPDATE_DATE,
+                    R.FILEONE,
+                    R.FILETWO,
+                    R.FILETHREE
+                FROM 
+                    REFERRAL R
+                LEFT JOIN 
+                    HP_MEMBER S_DR ON R.S_DR_ID = S_DR.DR_ID -- S_DR_ID에 대한 HP_MEMBER 조인
+                LEFT JOIN 
+                    HP_MEMBER R_DR ON R.R_DR_ID = R_DR.DR_ID -- R_DR_ID에 대한 HP_MEMBER 조인
+				WHERE R.R_DR_ID = #{drId}
+                AND REFER_CONTENT LIKE '%'||#{searchKeyword}||'%'
+				ORDER BY R.CREATED_AT DESC) B)
+		WHERE RNUM BETWEEN #{begin} AND #{end}
+	</select>
+	
+	<!-- 보낸 진료의뢰 리스트(의사id 검색) -->
+	<select id="getSendReferralList" resultType="referralVO" parameterType="map">
+		SELECT * FROM(
+			SELECT ROWNUM AS RNUM, B.*
+			FROM(
+				SELECT 
+                    R.REFER_ID,
+                    R.USER_NUM,
+                    (SELECT USER_NAME FROM USER_CLIENT WHERE USER_NUM = R.USER_NUM) AS USER_NAME,
+                    (SELECT H.HP_NAME FROM HOSPITAL H, DEPT D, HP_MEMBER M WHERE H.HP_ID = D.HP_ID AND D.DEPT_ID = M.DEPT_ID AND M.DR_ID = R.S_DR_ID) AS S_HP_NAME,
+                    (SELECT D.DEPT_NAME FROM HP_MEMBER H, DEPT D WHERE H.DEPT_ID = D.DEPT_ID AND H.DR_ID = R.S_DR_ID) AS S_DEPT_NAME,
+                    R.S_DR_ID,
+                    S_DR.DR_NAME AS S_DR_NAME, -- 조인된 S_DR_NAME
+                    (SELECT H.HP_NAME FROM HOSPITAL H, DEPT D, HP_MEMBER M WHERE H.HP_ID = D.HP_ID AND D.DEPT_ID = M.DEPT_ID AND M.DR_ID = R.R_DR_ID) AS R_HP_NAME,
+                    (SELECT D.DEPT_NAME FROM HP_MEMBER H, DEPT D WHERE H.DEPT_ID = D.DEPT_ID AND H.DR_ID = R.R_DR_ID) AS R_DEPT_NAME,
+                    R.R_DR_ID,
+                    R_DR.DR_NAME AS R_DR_NAME, -- 조인된 R_DR_NAME
+                    R.REFER_CONTENT,
+                    R.RESULT_CONTENT,
+                    DECODE(R.RECEIVE_CHK, '1', '확인 전', '2', '진행 중', '3', '완료', '4', '취소') AS RECEIVE_CHK,
+                    TO_CHAR(R.CREATED_AT,'YYYY-mm-DD') AS CREATE_DATE,
+                    TO_CHAR(R.UPDATED_AT,'YYYY-mm-DD') AS UPDATE_DATE,
+                    R.FILEONE,
+                    R.FILETWO,
+                    R.FILETHREE
+                FROM 
+                    REFERRAL R
+                LEFT JOIN 
+                    HP_MEMBER S_DR ON R.S_DR_ID = S_DR.DR_ID -- S_DR_ID에 대한 HP_MEMBER 조인
+                LEFT JOIN 
+                    HP_MEMBER R_DR ON R.R_DR_ID = R_DR.DR_ID -- R_DR_ID에 대한 HP_MEMBER 조인
+				WHERE R.S_DR_ID = #{drId}
+                AND REFER_CONTENT LIKE '%'||#{searchKeyword}||'%'
+				ORDER BY R.CREATED_AT DESC) B)
+		WHERE RNUM BETWEEN #{begin} AND #{end}
+	</select>
+	
+	<!-- 진료의뢰 상세보기 -->
+	<select id="getReferral" resultType="referralVO">
+		SELECT R.REFER_ID
+		     , R.USER_NUM
+		     , (SELECT USER_NAME FROM USER_CLIENT WHERE USER_NUM=R.USER_NUM) AS USER_NAME   
+		     , (SELECT H.HP_NAME FROM HOSPITAL H, DEPT D, HP_MEMBER M WHERE H.HP_ID = D.HP_ID AND D.DEPT_ID = M.DEPT_ID AND M.DR_ID = R.S_DR_ID) AS S_HP_NAME
+		     , (SELECT D.DEPT_NAME FROM HP_MEMBER H, DEPT D WHERE H.DEPT_ID = D.DEPT_ID AND H.DR_ID = R.S_DR_ID) AS S_DEPT_NAME
+		     , R.S_DR_ID
+		     , (SELECT DR_NAME FROM HP_MEMBER WHERE DR_ID=R.S_DR_ID) AS S_DR_NAME     
+		     , (SELECT H.HP_NAME FROM HOSPITAL H, DEPT D, HP_MEMBER M WHERE H.HP_ID = D.HP_ID AND D.DEPT_ID = M.DEPT_ID AND M.DR_ID = R.R_DR_ID) AS R_HP_NAME
+		     , (SELECT D.DEPT_NAME FROM HP_MEMBER H, DEPT D WHERE H.DEPT_ID = D.DEPT_ID AND H.DR_ID = R.R_DR_ID) AS R_DEPT_NAME
+		     , R.R_DR_ID
+		     , (SELECT DR_NAME FROM HP_MEMBER WHERE DR_ID=R.R_DR_ID) AS R_DR_NAME     
+		     , R.REFER_CONTENT
+		     , R.RESULT_CONTENT
+		     , DECODE(R.RECEIVE_CHK, '1', '확인 전', '2', '진행 중', '3', '완료', '4', '취소') AS RECEIVE_CHK
+		     , TO_CHAR(R.CREATED_AT,'YYYY-mm-DD') AS CREATE_DATE
+		     , TO_CHAR(R.UPDATED_AT,'YYYY-mm-DD') AS UPDATE_DATE
+		     , R.FILEONE
+		     , R.FILETWO
+		     , R.FILETHREE
+		FROM REFERRAL R
+		WHERE R.REFER_ID = #{referId}
+	</select>
+	
+	<insert id="insertReferral" parameterType="referralVO">
+		INSERT INTO REFERRAL(REFER_ID, USER_NUM, S_DR_ID, R_DR_ID, REFER_CONTENT, FILEONE)
+		VALUES((REFERRAL_SEQ.NEXTVAL), #{userNum}, #{sDrId}, #{rDrId}, #{referContent}, #{fileone})
+	</insert>
+	
+	<update id="updateReceive" parameterType="referralVO">
+		UPDATE REFERRAL
+		<set>
+			<if test="receiveChk == '확인 전'">RECEIVE_CHK = '2'</if>
+			<if test="receiveChk == '진행 중'">RECEIVE_CHK = '3'</if>
+			<if test="receiveChk == 'cancel'">RECEIVE_CHK = '4'</if>
+		</set>
+		WHERE REFER_ID = #{referId}
+	</update>
+	
+	<!-- 보낸 진료의뢰 개수 -->
+	<select id="getSendReferCnt" parameterType="map" resultType="int">
+		SELECT COUNT(*) FROM REFERRAL
+		WHERE S_DR_ID = #{drId}
+		AND REFER_CONTENT LIKE '%'||#{searchKeyword}||'%' 
+	</select>
+	
+	<!-- 받은 진료의뢰 개수 -->
+	<select id="getReferCnt" parameterType="map" resultType="int">
+		SELECT COUNT(*) FROM REFERRAL
+		WHERE R_DR_ID = #{drId}
+		AND REFER_CONTENT LIKE '%'||#{searchKeyword}||'%' 
+	</select>
+	
+	<select id="getReferCntAll" parameterType="hpMemberVO" resultType="int">
+		SELECT COUNT(*) FROM REFERRAL
+	</select>
+	
+	<select id="getReferralListAllPage" parameterType="map" resultType="referralVO">
+		SELECT * FROM(
+			SELECT ROWNUM AS RNUM, B.*
+			FROM(
+				SELECT R.REFER_ID
+				     , R.USER_NUM
+				     , (SELECT USER_NAME FROM USER_CLIENT WHERE USER_NUM=R.USER_NUM) AS USER_NAME   
+				     , (SELECT H.HP_NAME FROM HOSPITAL H, DEPT D, HP_MEMBER M WHERE H.HP_ID = D.HP_ID AND D.DEPT_ID = M.DEPT_ID AND M.DR_ID = R.S_DR_ID) AS S_HP_NAME
+				     , (SELECT D.DEPT_NAME FROM HP_MEMBER H, DEPT D WHERE H.DEPT_ID = D.DEPT_ID AND H.DR_ID = R.S_DR_ID) AS S_DEPT_NAME
+				     , R.S_DR_ID
+				     , (SELECT DR_NAME FROM HP_MEMBER WHERE DR_ID=R.S_DR_ID) AS S_DR_NAME     
+				     , (SELECT H.HP_NAME FROM HOSPITAL H, DEPT D, HP_MEMBER M WHERE H.HP_ID = D.HP_ID AND D.DEPT_ID = M.DEPT_ID AND M.DR_ID = R.R_DR_ID) AS R_HP_NAME
+				     , (SELECT D.DEPT_NAME FROM HP_MEMBER H, DEPT D WHERE H.DEPT_ID = D.DEPT_ID AND H.DR_ID = R.R_DR_ID) AS R_DEPT_NAME
+				     , R.R_DR_ID
+				     , (SELECT DR_NAME FROM HP_MEMBER WHERE DR_ID=R.R_DR_ID) AS R_DR_NAME     
+				     , R.REFER_CONTENT
+				     , R.RESULT_CONTENT
+				     , DECODE(R.RECEIVE_CHK, '1', '확인 전', '2', '진행 중', '3', '완료', '4', '취소') AS RECEIVE_CHK
+				     , TO_CHAR(R.CREATED_AT,'YYYY-mm-DD') AS CREATE_DATE
+				     , TO_CHAR(R.UPDATED_AT,'YYYY-mm-DD') AS UPDATE_DATE
+				     , R.FILEONE
+				     , R.FILETWO
+				     , R.FILETHREE
+				FROM REFERRAL R
+				ORDER BY R.REFER_ID DESC) B)
+		WHERE RNUM BETWEEN #{begin} AND #{end};
+	</select>
+	
+</mapper>
+
+
+
+
+
+
+
+

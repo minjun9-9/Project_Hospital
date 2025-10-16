@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hpMemberDept">
+
+	<select id="hpMemberDeptList" parameterType="reservationVO" resultType="hpMemberDeptDTO">
+		SELECT *
+		FROM RESERVATION R, HP_MEMBER H, DEPT D
+		WHERE R.DR_ID = H.DR_ID
+		AND H.DEPT_ID = D.DEPT_ID
+		AND R.USER_NUM = #{userNum}
+		ORDER BY TO_NUMBER(R.OT_ID) DESC
+	</select>
+	
+</mapper>
+
+
+
+
+
+
+

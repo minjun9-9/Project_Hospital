@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="deptCare">
+	<!-- 진료과 + 진료과 파일 정보 가져오는 쿼리문 -->
+	<select id="getDeptInfo" resultType="deptAndFileDTO">
+		SELECT D.DEPT_ID, D.DEPT_NAME, D.DR_ID,
+		       F.FILESTORE_ID, F.FILE_PATH
+		FROM DEPT D LEFT OUTER JOIN FILESTORE F
+		  ON D.FILEONE = F.FILESTORE_ID
+		WHERE D.QUIT = '0'
+		ORDER BY D.DEPT_NAME
+	</select>
+	
+	<!-- 진료과 의료진 정보 가져오는 쿼리문 -->
+	<select id="getDeptDrInfo" parameterType="string" resultType="deptDrInfoDTO">
+		SELECT DR_ID ,DR_NAME, DR_POSITION
+		FROM HP_MEMBER
+		WHERE DEPT_ID = #{deptId} 
+		  AND QUIT = '0'
+	</select>
+	
+	<!-- 진료과장 파일 경로만 가져오는 쿼리문 -->
+	<select id="getDeptHeadFile" parameterType="string" resultType="string">
+		SELECT F.FILE_PATH
+		FROM HP_MEMBER M, FILESTORE F
+		WHERE M.FILEONE = F.FILESTORE_ID
+		  AND M.DR_ID = #{drId}
+		  AND M.QUIT = '0'
+	</select>
+	
+	<!-- 진료과 ID select 쿼리문 -->
+	<select id="getOneDeptId" parameterType="string" resultType="string">
+		SELECT DEPT_ID FROM DEPT WHERE DEPT_ID = #{deptId}
+	</select>
+	
+	<!-- 진료과 등록 쿼리문 -->
+	<insert id="deptRegister" parameterType="deptRegisterDTO">
+		INSERT INTO DEPT
+		    (DEPT_ID, DEPT_NAME, HP_ID, FILEONE)
+		VALUES (#{deptId}, #{deptName}, 'SSW', #{fileone})
+	</insert>
+	
+	<!-- 진료과 이미지 파일 등록 쿼리문 -->
+	<insert id="deptImgFileRegister" parameterType="fileStoreVO">
+		INSERT INTO FILESTORE
+		    (FILESTORE_ID, ORIGINAL_NAME, FILE_PATH)
+		VALUES (#{filestoreId}, #{originalName}, #{filePath})
+	</insert>
+	
+	<!-- 진료과 삭제 쿼리문 -->
+	<update id="deleteDeptInfo" parameterType="string">
+		UPDATE DEPT SET QUIT = '1' WHERE DEPT_ID = #{deptId}
+	</update>
+	
+	<!-- 진료과 1개 정보 가져오는 쿼리문 -->
+	<select id="getOneDeptInfo" parameterType="string" resultType="deptAndFileDTO">
+		SELECT D.DEPT_ID, D.DEPT_NAME, D.DR_ID,
+		       F.FILESTORE_ID, F.ORIGINAL_NAME, F.FILE_PATH
+		FROM DEPT D LEFT OUTER JOIN FILESTORE F
+		  ON D.FILEONE = F.FILESTORE_ID
+		WHERE D.DEPT_ID = #{deptId}
+		  AND D.QUIT = '0'
+	</select>
+	
+	<!-- 진료과장 정보 가져오는 쿼리문 -->
+	<select id="getDeptOneDrInfo" parameterType="string" resultType="deptDrInfoDTO">
+		SELECT M.DR_NAME, M.DR_POSITION, F.FILE_PATH
+		FROM HP_MEMBER M LEFT OUTER JOIN FILESTORE F
+		  ON M.FILEONE = F.FILESTORE_ID
+		WHERE M.DR_ID = #{drId}
+		  AND M.QUIT = '0'
+	</select>
+	
+	<!-- 진료과 파일 컬럼만 가져오는 쿼리문 -->
+	<select id="getDeptFileColumn" parameterType="string" resultType="string">
+		SELECT FILEONE FROM DEPT
+		WHERE DEPT_ID = #{deptId}
+	</select>
+	
+	<!-- 진료과 수정 쿼리문 -->
+	<update id="updateDeptInfo" parameterType="deptUpdateDTO">
+		UPDATE DEPT 
+		SET DEPT_NAME = #{deptName},
+		    DR_ID = #{deptHeadId},
+		    FILEONE = #{fileone}
+		WHERE DEPT_ID = #{deptId}
+	</update>
+	
+	<!-- 진료과 파일 컬럼 NULL로 UPDATE 쿼리문 -->
+	<update id="updateFileToNull" parameterType="string">
+		UPDATE DEPT 
+		SET FILEONE = NULL
+		WHERE DEPT_ID = #{deptId}
+	</update>
+	
+	<!-- 파일 테이블 업데이트 쿼리문 -->
+	<update id="updateFileTable" parameterType="UpdateFileStoreDTO">
+		UPDATE FILESTORE 
+		SET FILESTORE_ID = #{filestoreId},
+		    ORIGINAL_NAME = #{originalName},
+		    FILE_PATH = #{filePath}
+		WHERE FILESTORE_ID = #{existFilestoreId}
+	</update>
+	
+	<!-- 진료과 이미지 파일 패스만 가져오는 쿼리문 -->
+	<select id="getFilePath" parameterType="string" resultType="string">
+		SELECT FILE_PATH FROM FILESTORE WHERE FILESTORE_ID = #{fileStoreId}
+	</select>
+	
+	<!-- 진료과 파일 삭제 쿼리문 -->
+	<delete id="deleteDeptFileTable" parameterType="string">
+		DELETE FROM FILESTORE WHERE FILESTORE_ID = #{fileStoreId}
+	</delete>
+	
+	<!-- 진료과 ID, 이름 가져오는 쿼리문 -->
+	<select id="getDeptIdName" parameterType="string" resultType="searchDeptIdName">
+		SELECT DEPT_ID, DEPT_NAME 
+		FROM DEPT
+		WHERE DEPT_NAME LIKE '%' || #{deptName} || '%'
+	</select>
+	
+	<!-- 진료과 + 진료과 파일 정보 이름으로 검색 -->
+	<select id="getDeptInfoByName" parameterType="string" resultType="deptAndFileDTO">
+		SELECT D.DEPT_ID, D.DEPT_NAME, D.DR_ID,
+		       F.FILESTORE_ID, F.FILE_PATH
+		FROM DEPT D LEFT OUTER JOIN FILESTORE F
+		  ON D.FILEONE = F.FILESTORE_ID
+		WHERE D.QUIT = '0'
+		  AND DEPT_NAME LIKE '%' || #{deptName} || '%'
+		ORDER BY D.DEPT_NAME
+	</select>
+	
+
+
+
+
+
+</mapper>

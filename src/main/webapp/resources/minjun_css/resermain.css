@@ -1,0 +1,109 @@
+
+@charset "UTF-8";
+
+.inner-wrap{
+	display: flex;
+	justify-content: center;
+	gap: 20px;
+	align-items: flex-start;
+	padding: 20px;
+}
+.left-container, .right-container {
+	width: auto;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+.left-container {
+	width: 625px;
+	
+}
+.right-container {
+	width: 420px;
+	
+}
+.left, .right{
+	height: auto;
+	box-sizing: border-box;
+	width: 100%;
+}
+.left{
+	margin-right: 10px;
+	width: 605px;
+}
+.right{
+	margin-left: 10px;
+	width: 390px;
+}
+
+.box-default{
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 24px 30px 22px 30px;
+	background-color: white;
+}
+.search-flex {
+	height: 220px;
+}
+.normal-reservation{
+	align-items: center;
+	background-color: white;
+}
+
+/* 검색부분 양식만들기 */
+.searchResermain{
+	width: 70%;
+	border: 2px solid #3378c1;
+	display: flex;
+}
+.buttonResermain{
+	width: 20%;
+	background-color: #3378c1;
+	border: 0;
+}
+#searchQuery{
+	border: 0;
+	color: #0561da;
+	padding: 15px 15px;
+	width: 80%;
+}
+#searchQuery::placeholder{
+	color: #0561da;
+}
+#SearchButtonResermain{
+	stroke: white;
+	stroke-width: 3;
+	
+}
+.left{
+	gap:30px;
+}
+.carousel-control-next-icon, .carousel-control-prev-icon{
+	background-color: #f7f7f9 !important;
+	width: 15px;
+	height: 15px;
+	background-image: none;
+	border-radius: 50%;
+	border: 3px solid black; 
+}
+.carousel-control-next-icon:hover, .carousel-control-prev-icon:hover{
+	border: 3px solid #3378c1; 
+}
+
+.carousel-control-prev:hover, .carousel-control-next:hover {
+	border: none;
+}
+
+
+.ico-phone{
+	margin-bottom: 15px;
+}
+
+
+/* 버튼 바꾸기 */
+.button-initial{
+	border-radius: 50%;
+	border: 0;
+}

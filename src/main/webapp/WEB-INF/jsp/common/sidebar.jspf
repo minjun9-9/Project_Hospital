@@ -1,0 +1,67 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+<!-- 사이드바 -->
+<div class="menu bg_1">
+	<div class="title bor_1"><a href="${pageContext.request.contextPath }/adminDoctorMain/mainPage">아이티윌병원</a></div>
+	<div class="gnb_box">
+		<ul class="gnb_1st">
+			<li class="have_sub">
+				<a href="#">의료진 관리</a>
+				<ul class="gnb_2nd drul">
+					<li class="drliCare"><a href="${pageContext.request.contextPath }/admin/adminDoctorCare">의료진 관리</a></li>
+					<li class="drliregister" style="cursor: pointer;" onclick="validateAdmin('drRegister')"><a>의료진 등록</a></li>
+					<li class="drliRank" style="cursor: pointer;"><a href="${pageContext.request.contextPath }/admin/adminDoctorRank">의료진 순위 관리</a></li>
+				</ul>
+			</li>
+			<li class="have_sub">
+				<a href="#">진료과 관리</a>
+				<ul class="gnb_2nd deptul">
+					<li class="deptliCare" style="cursor: pointer;" onclick="validateAdmin('deptCare')"><a>진료과 관리</a></li>
+					<li class="deptliregister" style="cursor: pointer;" onclick="validateAdmin('deptRegister')"><a>진료과 등록</a></li>
+				</ul>
+			</li>
+			<li class="have_sub">
+				<a href="#">건강정보</a>
+				<ul class="gnb_2nd healthul">
+					<li class="healthDisease"><a href="${pageContext.request.contextPath }/health/diseaseClassificationManagePage">질환, 신체 분류관리</a></li>
+					<li class="healthBoard"><a href="${pageContext.request.contextPath }/health/diseaseBoardManagePage">건강 게시판 관리</a></li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+</div>
+
+<script>
+
+	let type = '${resultDto.type}'
+
+	console.log(type);
+	console.log('사이드바 작동확인');
+
+	function validateAdmin(address){
+		
+		if(type === 'doctor'){
+			alert('의료진은 접근할 수 없습니다.');
+		} else {
+
+			switch(address) {
+
+				case 'drRegister':
+					location.href='${pageContext.request.contextPath }/admin/adminDoctorRegister';
+					break;
+				case 'deptCare':
+					location.href='${pageContext.request.contextPath }/admin/adminDeptCare';
+					break;
+
+				case 'deptRegister':
+					location.href='${pageContext.request.contextPath }/admin/adminDeptRegister';
+					break;
+
+			}
+		}
+	}
+
+
+</script>

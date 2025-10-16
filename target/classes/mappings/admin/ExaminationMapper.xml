@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.project.hospital.dao.ExaminationDAO">
+
+	<!-- 메인페이지 새글/이번달 cnt 추출  -->
+	<select id="getExamCnt" parameterType="HashMap" resultType="HashMap">
+	
+		SELECT  
+	        SUM(CASE WHEN CREATED_AT BETWEEN #{todayStart} AND #{todayEnd} THEN 1 ELSE 0 END) AS TODAY_CNT,
+       	   SUM(CASE WHEN CREATED_AT BETWEEN #{monthStart} AND #{monthEnd} THEN 1 ELSE 0 END) AS MONTH_CNT
+	    FROM EXAMINATION_BOARD
+		
+	</select>
+</mapper>
+
+
+
+
+
+
+

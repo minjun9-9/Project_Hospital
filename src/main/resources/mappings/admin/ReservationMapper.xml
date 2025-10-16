@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.project.hospital.dao.ReservationMapperDAO">
+	
+	<!-- drId를 이용해 예약 리스트 추출  -->
+	<select id="getListByDrId" parameterType="String" resultType="reservationVO">
+	
+		SELECT * FROM RESERVATION WHERE DR_ID = #{drId}
+		
+	</select>
+	
+	<!-- otId를 이용해 OT_ID 리스트 추출  -->
+	<select id="getOtIdListByDrIdAndDate" parameterType="HashMap" resultType="String">
+	
+		SELECT R.OT_ID
+		FROM RESERVATION R, (SELECT OT_ID
+		                     FROM OPENING_TIME
+		                     WHERE DR_ID = #{drId}
+		                     AND YEAR_DATE LIKE #{date}
+		                     ORDER BY YEAR_DATE, TO_NUMBER(TIMETABLE_ID)
+		                     ) O
+		WHERE R.OT_ID = O.OT_ID
+		ORDER BY TO_NUMBER(R.OT_ID)
+		
+	</select>
+	
+	<!-- 메인페이지 오늘/이번달 cnt 추출  -->
+	<select id="getCntTodayMonth" parameterType="HashMap" resultType="HashMap">
+		
+		SELECT  
+	       SUM(CASE WHEN CREATED_AT BETWEEN #{todayStart} AND #{todayEnd} THEN 1 ELSE 0 END) AS TODAY_CNT,
+       	   SUM(CASE WHEN CREATED_AT BETWEEN #{monthStart} AND #{monthEnd} THEN 1 ELSE 0 END) AS MONTH_CNT
+	    FROM RESERVATION
+		
+	</select>
+	
+	<!-- 오늘  (현시간까지)/ 이번달 방문인 횟수 -->
+	<select id="getCntVisit" resultType="HashMap">
+	
+		SELECT COUNT(RECORD_ID) AS "VISIT_CNT"
+		FROM RECORD R, (SELECT RESERV_ID
+		                FROM RESERVATION R, (SELECT O.OT_ID
+		                                    FROM TIMETABLE T, (SELECT OT_ID, TIMETABLE_ID
+		                                                        FROM OPENING_TIME
+		                                                        WHERE YEAR_DATE = #{today}) O
+		                                    WHERE T.TIMETABLE_ID = O.TIMETABLE_ID
+		                                    AND TIME BETWEEN '09:00' AND #{time}) A
+		                WHERE R.OT_ID = A.OT_ID) AT
+		WHERE R.RESERV_ID = AT.RESERV_ID  
+		UNION ALL
+		SELECT COUNT(R.RECORD_ID)
+		FROM RECORD R, (SELECT R.RESERV_ID
+		                FROM RESERVATION R, (SELECT OT_ID
+	                                         FROM OPENING_TIME
+	                                         WHERE YEAR_DATE LIKE #{month}) O
+		                WHERE R.OT_ID = O.OT_ID) T
+		WHERE R.RESERV_ID = T.RESERV_ID
+	
+	</select>
+	
+	<!-- 오늘 / 이번달 예약인 횟수  1.오늘예약인횟수 2. 현시간까지 예약인 횟수 (부재율계산용) 3. 이번달 예약인 횟수 -->
+	<select id="getCntReserv" parameterType="HashMap" resultType="HashMap">
+	
+		SELECT COUNT(R.RESERV_ID) AS "RESERV_CNT"
+		FROM RESERVATION R, (SELECT OT_ID
+		                        FROM OPENING_TIME
+		                        WHERE YEAR_DATE = #{today}) O
+		WHERE R.OT_ID = O.OT_ID
+		UNION ALL
+		SELECT COUNT(RESERV_ID)
+        FROM RESERVATION R, (SELECT O.OT_ID
+                            FROM TIMETABLE T, (SELECT OT_ID, TIMETABLE_ID
+                                                FROM OPENING_TIME
+                                                WHERE YEAR_DATE = #{today}) O
+                            WHERE T.TIMETABLE_ID = O.TIMETABLE_ID
+                            AND TIME BETWEEN '09:00' AND #{time}) A
+        WHERE R.OT_ID = A.OT_ID
+        UNION ALL
+		SELECT COUNT(R.RESERV_ID)
+		FROM RESERVATION R, (SELECT OT_ID
+		                        FROM OPENING_TIME
+		                        WHERE YEAR_DATE LIKE #{month}) O
+		WHERE R.OT_ID = O.OT_ID
+		
+	</select>
+	
+	<select id="getReservPhoneAndTime" parameterType="HashMap" resultType="HashMap">
+	
+		SELECT U.USER_PHONE_NUM, R.CREATED_AT
+		FROM USER_CLIENT U, (SELECT USER_NUM, CREATED_AT
+		                    FROM RESERVATION
+		                    WHERE CREATED_AT BETWEEN #{todayStart} AND #{todayEnd}
+		                    ORDER BY CREATED_AT DESC) R
+		WHERE U.USER_NUM = R.USER_NUM
+		
+	</select>
+	
+</mapper>
+
+
+
+
+
+
+

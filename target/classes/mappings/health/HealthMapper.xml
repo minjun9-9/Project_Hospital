@@ -1,0 +1,838 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="healthDAO">
+
+	<select id="getBodyClassificationList" resultType="bodyClassificationVO">
+		SELECT * FROM BODY_CLASSIFICATION
+		ORDER BY TO_NUMBER(BODY_PART_ID)
+	</select>
+	
+	<select id="getDiseaseClassificationList" resultType="diseaseCLassificationVO">
+		SELECT * FROM DISEASE_CLASSIFICATION
+		ORDER BY TO_NUMBER(DISEASE_PART_ID)
+	</select>
+	
+	<select id="getDiseaseListByBodyPartName" resultType="diseaseBoardVO">
+		SELECT * FROM DISEASE_BOARD
+		WHERE BODY_PART_ID = (SELECT BODY_PART_ID
+                              FROM BODY_CLASSIFICATION
+                              WHERE BODY_PART_NAME = #{bodyPartName})
+        ORDER BY DISEASE_NAME
+	</select>
+	<!-- 질환 게시글 : 파일 경로, 신체 분류명, 질환 분류명도 가져와야 될 것 같아서 JOIN한 쿼리로 대체. resultType 전부 dto로 교체 -->
+	<!-- 페이지네이션 때문에 아래껄로 대체 
+	<select id="getDiseaseBoardList" resultType="diseaseBoardDTO">
+		SELECT B.DISEASE_BOARD_ID, B.DISEASE_NAME, B.DISEASE_PART_ID, C.DISEASE_PART_NAME, B.BODY_PART_ID, BC.BODY_PART_NAME, B.TITLE, B.DISEASE_NAME
+		        , B.CONTENT, B.FILEONE, F.FILE_PATH, F.FILESTORE_ID, B.BOARD_COUNT, B.CREATED_AT, B.UPDATED_AT
+		        , COUNT(*) OVER () AS TOTAL_COUNT
+		FROM DISEASE_BOARD B
+		JOIN DISEASE_CLASSIFICATION C ON B.DISEASE_PART_ID = C.DISEASE_PART_ID
+		JOIN BODY_CLASSIFICATION BC ON B.BODY_PART_ID = BC.BODY_PART_ID
+		LEFT JOIN FILESTORE F ON  B.FILEONE = F.FILESTORE_ID
+		ORDER BY B.DISEASE_NAME
+	</select>
+	 -->
+	 <!-- 위에꺼가 필요한데 없어서 일단 따로 만듦...ㅜㅜdiseaseSearch.jsp 구현때문에 -->
+	 <select id="getDiseaseBoardListClientPage" resultType="diseaseBoardDTO">
+	 	SELECT B.DISEASE_BOARD_ID, B.DISEASE_NAME, B.DISEASE_PART_ID, C.DISEASE_PART_NAME, B.BODY_PART_ID, BC.BODY_PART_NAME, B.TITLE, B.DISEASE_NAME
+		        , B.CONTENT, B.FILEONE, F.FILE_PATH, F.FILESTORE_ID, B.BOARD_COUNT, B.CREATED_AT, B.UPDATED_AT
+		        , COUNT(*) OVER () AS TOTAL_COUNT
+		FROM DISEASE_BOARD B
+		JOIN DISEASE_CLASSIFICATION C ON B.DISEASE_PART_ID = C.DISEASE_PART_ID
+		JOIN BODY_CLASSIFICATION BC ON B.BODY_PART_ID = BC.BODY_PART_ID
+		LEFT JOIN FILESTORE F ON  B.FILEONE = F.FILESTORE_ID
+		ORDER BY B.DISEASE_NAME
+	 </select>
+	 
+	 
+	 <select id="getDiseaseBoardList" resultType="diseaseBoardDTO">
+	 
+	 SELECT *
+		FROM (
+		    SELECT T.*,
+		           ROWNUM AS rnum
+		    FROM (
+		        SELECT B.DISEASE_BOARD_ID,
+		               B.DISEASE_NAME,
+		               B.DISEASE_PART_ID,
+		               C.DISEASE_PART_NAME,
+		               B.BODY_PART_ID,
+		               BC.BODY_PART_NAME,
+		               B.TITLE,
+		               B.CONTENT,
+		               B.FILEONE,
+		               F.FILE_PATH,
+		               F.FILESTORE_ID,
+		               B.BOARD_COUNT,
+		               B.CREATED_AT,
+		               B.UPDATED_AT,
+		               COUNT(*) OVER() AS TOTAL_COUNT
+		        FROM DISEASE_BOARD B
+		        JOIN DISEASE_CLASSIFICATION C 
+		               ON B.DISEASE_PART_ID = C.DISEASE_PART_ID
+		        JOIN BODY_CLASSIFICATION BC 
+		               ON B.BODY_PART_ID = BC.BODY_PART_ID
+		        LEFT JOIN FILESTORE F 
+		               ON B.FILEONE = F.FILESTORE_ID
+		        ORDER BY B.DISEASE_NAME    
+		    ) T
+		    WHERE ROWNUM <![CDATA[ <= ]]> 10             
+		)
+		WHERE rnum <![CDATA[ >= ]]> 1   
+	 	
+	 </select>
+	
+	<select id="getDiseaseBoardDetail" resultType="diseaseBoardDTO"> 
+		SELECT B.DISEASE_BOARD_ID, B.DISEASE_NAME, B.DISEASE_PART_ID, C.DISEASE_PART_NAME, B.BODY_PART_ID, BC.BODY_PART_NAME, B.TITLE, B.DISEASE_NAME
+		        , B.CONTENT, B.FILEONE, F.FILE_PATH, F.FILESTORE_ID, B.BOARD_COUNT, B.CREATED_AT, B.UPDATED_AT
+		        , COUNT(*) OVER () AS TOTAL_COUNT
+		FROM DISEASE_BOARD B
+		JOIN DISEASE_CLASSIFICATION C ON B.DISEASE_PART_ID = C.DISEASE_PART_ID
+		JOIN BODY_CLASSIFICATION BC ON B.BODY_PART_ID = BC.BODY_PART_ID
+		LEFT JOIN FILESTORE F ON  B.FILEONE = F.FILESTORE_ID 
+		WHERE DISEASE_BOARD_ID = #{diseaseBoardId}
+	</select>
+	
+	<update id="diseaseBoardIncreaseCnt">
+		UPDATE DISEASE_BOARD
+		SET BOARD_COUNT = BOARD_COUNT + 1
+		WHERE DISEASE_BOARD_ID = #{diseaseBoardId}
+	</update>
+	
+	
+	<select id="getExaminationListByBodyPart" resultType="examinationBoardVO">
+		SELECT * FROM EXAMINATION_BOARD
+		WHERE BODY_PART_ID = (SELECT BODY_PART_ID
+                              FROM BODY_CLASSIFICATION
+                              WHERE BODY_PART_NAME = #{bodyPartName})
+        ORDER BY EXAMINATION_NAME
+	</select>
+
+	 
+	 <select id="getExaminListByBodyPartAndSearchKeyword" resultType="examinationBoardDTO">
+		SELECT  COUNT(*) OVER () AS TOTAL_COUNT, E.EXAMINATION_ID, E.EXAMINATION_NAME, E.BODY_PART_ID, BC.BODY_PART_NAME,
+			        E.CONTENT, E.FILEONE, F.FILE_PATH, F.FILESTORE_ID, E.BOARD_COUNT, E.CREATED_AT, E.UPDATED_AT
+		FROM EXAMINATION_BOARD E
+		JOIN BODY_CLASSIFICATION BC ON E.BODY_PART_ID = BC.BODY_PART_ID
+		LEFT JOIN FILESTORE F ON  E.FILEONE = F.FILESTORE_ID
+		WHERE E.BODY_PART_ID = (SELECT BODY_PART_ID
+		                    FROM BODY_CLASSIFICATION
+		                    WHERE BODY_PART_NAME = #{bodyPart})
+		<if test="keyword != null">
+		AND (E.CONTENT LIKE '%'|| #{keyword} || '%' OR E.EXAMINATION_NAME LIKE '%'|| #{keyword} || '%')
+		</if>
+		ORDER BY E.EXAMINATION_NAME
+	 </select>
+	 
+	 <select id="getExaminationBoardOnlySearchByKeyword" resultType="examinationBoardDTO">
+	 	SELECT  COUNT(*) OVER () AS TOTAL_COUNT, E.EXAMINATION_ID, E.EXAMINATION_NAME, E.BODY_PART_ID, BC.BODY_PART_NAME,
+			        E.CONTENT, E.FILEONE, F.FILE_PATH, F.FILESTORE_ID, E.BOARD_COUNT, E.CREATED_AT, E.UPDATED_AT
+		FROM EXAMINATION_BOARD E
+		JOIN BODY_CLASSIFICATION BC ON E.BODY_PART_ID = BC.BODY_PART_ID
+		LEFT JOIN FILESTORE F ON  E.FILEONE = F.FILESTORE_ID
+		WHERE (E.CONTENT LIKE '%'|| #{keyword} || '%' OR E.EXAMINATION_NAME LIKE '%'|| #{keyword} || '%')
+		ORDER BY E.EXAMINATION_NAME
+	 </select>
+	
+	<select id="getExaminationBoardListClientPage" resultType="examinationBoardDTO">
+		SELECT  COUNT(*) OVER () AS TOTAL_COUNT, E.EXAMINATION_ID, E.EXAMINATION_NAME, E.BODY_PART_ID, BC.BODY_PART_NAME,
+			        E.CONTENT, E.FILEONE, F.FILE_PATH, F.FILESTORE_ID, E.BOARD_COUNT, E.CREATED_AT, E.UPDATED_AT
+		FROM EXAMINATION_BOARD E
+		JOIN BODY_CLASSIFICATION BC ON E.BODY_PART_ID = BC.BODY_PART_ID
+		LEFT JOIN FILESTORE F ON  E.FILEONE = F.FILESTORE_ID
+		ORDER BY E.EXAMINATION_NAME
+	</select>
+	
+	
+	<select id="getExaminationBoardList" resultType="examinationBoardDTO">
+		SELECT *
+		FROM (
+		    SELECT T.*,
+		           ROWNUM AS rnum
+		    FROM (
+		        SELECT E.EXAMINATION_ID,
+		               E.EXAMINATION_NAME,
+		               E.BODY_PART_ID,
+		               BC.BODY_PART_NAME,
+		               E.CONTENT,
+		               E.FILEONE,
+		               F.FILE_PATH,
+		               F.FILESTORE_ID,
+		               E.BOARD_COUNT,
+		               E.CREATED_AT,
+		               E.UPDATED_AT,
+		               COUNT(*) OVER() AS TOTAL_COUNT
+		        FROM EXAMINATION_BOARD E
+		        JOIN BODY_CLASSIFICATION BC 
+		               ON E.BODY_PART_ID = BC.BODY_PART_ID
+		        LEFT JOIN FILESTORE F 
+		               ON E.FILEONE = F.FILESTORE_ID
+		        ORDER BY E.EXAMINATION_NAME    
+		    ) T
+		    WHERE ROWNUM <![CDATA[ <= ]]>  10             
+		)
+		WHERE rnum <![CDATA[ >= ]]> 1
+	</select>
+	
+	<select id="getExaminationBoardDetail" resultType="examinationBoardDTO">
+		SELECT  COUNT(*) OVER () AS TOTAL_COUNT, E.EXAMINATION_ID, E.EXAMINATION_NAME, E.BODY_PART_ID, BC.BODY_PART_NAME,
+			        E.CONTENT, E.FILEONE, F.FILE_PATH, F.FILESTORE_ID, E.BOARD_COUNT, E.CREATED_AT, E.UPDATED_AT
+		FROM EXAMINATION_BOARD E
+		JOIN BODY_CLASSIFICATION BC ON E.BODY_PART_ID = BC.BODY_PART_ID
+		LEFT JOIN FILESTORE F ON  E.FILEONE = F.FILESTORE_ID
+		WHERE E.EXAMINATION_ID = #{examinationId}
+	</select>
+	
+	<update id="examinationBoardIncreaseCnt">
+		UPDATE EXAMINATION_BOARD
+		SET BOARD_COUNT = BOARD_COUNT + 1
+		WHERE EXAMINATION_ID = #{examinationId}
+	</update>
+	
+	<select id="getHealthBoardList" resultType="healthBoardDTO">
+		SELECT  COUNT(*) OVER () AS TOTAL_COUNT, H.HB_ID, H.TITLE
+			        , H.CONTENT, H.FILEONE, F.FILE_PATH, F.FILESTORE_ID, H.BOARD_COUNT, H.CREATED_AT, H.UPDATED_AT
+		FROM HEALTH_BOARD H 
+		LEFT JOIN FILESTORE F ON  H.FILEONE = F.FILESTORE_ID
+		ORDER BY TITLE
+	</select>
+	
+	<select id="getHealthBoardListClientPage" resultType="healthBoardDTO">
+		SELECT  COUNT(*) OVER () AS TOTAL_COUNT, H.HB_ID, H.TITLE
+			        , H.CONTENT, H.FILEONE, F.FILE_PATH, F.FILESTORE_ID, H.BOARD_COUNT, H.CREATED_AT, H.UPDATED_AT
+		FROM HEALTH_BOARD H 
+		LEFT JOIN FILESTORE F ON  H.FILEONE = F.FILESTORE_ID
+		ORDER BY TITLE
+	</select>
+	
+	<select id="getHealthBoardBySearchKeyword" resultType="healthBoardDTO">
+		SELECT  COUNT(*) OVER () AS TOTAL_COUNT, H.HB_ID, H.TITLE
+			        , H.CONTENT, H.FILEONE, F.FILE_PATH, F.FILESTORE_ID, H.BOARD_COUNT, H.CREATED_AT, H.UPDATED_AT
+		FROM HEALTH_BOARD H 
+		LEFT JOIN FILESTORE F ON  H.FILEONE = F.FILESTORE_ID
+		WHERE (H.CONTENT LIKE '%'|| #{keyword} || '%' OR H.TITLE LIKE '%'|| #{keyword} || '%')
+		ORDER BY H.TITLE
+	</select>
+	
+	<update id="healthBoardIncreaseCnt">
+		UPDATE HEALTH_BOARD
+		SET BOARD_COUNT = BOARD_COUNT + 1
+		WHERE HB_ID = #{hbId}
+	</update>	
+	
+	<select id="getHealthBoardDetail" resultType="healthBoardDTO">
+		SELECT COUNT(*) OVER () AS TOTAL_COUNT, H.HB_ID, H.TITLE, H.CONTENT
+				, H.FILEONE, F.FILE_PATH, F.FILESTORE_ID, H.BOARD_COUNT, H.CREATED_AT, H.UPDATED_AT
+		FROM HEALTH_BOARD H 
+		LEFT JOIN FILESTORE F ON H.FILEONE = F.FILESTORE_ID
+		WHERE HB_ID = #{hbId}
+	</select>
+	
+	
+	<select id="getDiseaseBoardBySearchKeyword" resultType="diseaseBoardDTO">
+		SELECT B.DISEASE_BOARD_ID, B.DISEASE_NAME, B.DISEASE_PART_ID, C.DISEASE_PART_NAME, B.BODY_PART_ID, BC.BODY_PART_NAME, B.TITLE, B.DISEASE_NAME
+		        , B.CONTENT, B.FILEONE, F.FILE_PATH, F.FILESTORE_ID, B.BOARD_COUNT, B.CREATED_AT, B.UPDATED_AT
+		        , COUNT(*) OVER () AS TOTAL_COUNT
+		FROM DISEASE_BOARD B
+		JOIN DISEASE_CLASSIFICATION C ON B.DISEASE_PART_ID = C.DISEASE_PART_ID
+		JOIN BODY_CLASSIFICATION BC ON B.BODY_PART_ID = BC.BODY_PART_ID
+		LEFT JOIN FILESTORE F ON  B.FILEONE = F.FILESTORE_ID
+		WHERE B.BODY_PART_ID = (SELECT BODY_PART_ID
+		                    FROM BODY_CLASSIFICATION
+		                    WHERE BODY_PART_NAME = #{bodyPart})
+		<if test="keyword != null">
+		AND (B.CONTENT LIKE '%'|| #{keyword} || '%' OR B.TITLE LIKE '%'|| #{keyword} || '%')
+		</if>
+		ORDER BY B.DISEASE_NAME
+	</select> 
+	
+	<select id="getDiseaseBoardOnlySearchByKeyword" resultType="diseaseBoardDTO">
+		SELECT B.DISEASE_BOARD_ID, B.DISEASE_NAME, B.DISEASE_PART_ID, C.DISEASE_PART_NAME, B.BODY_PART_ID, BC.BODY_PART_NAME, B.TITLE, B.DISEASE_NAME
+		        , B.CONTENT, B.FILEONE, F.FILE_PATH, F.FILESTORE_ID, B.BOARD_COUNT, B.CREATED_AT, B.UPDATED_AT
+		        , COUNT(*) OVER () AS TOTAL_COUNT
+		FROM DISEASE_BOARD B
+		JOIN DISEASE_CLASSIFICATION C ON B.DISEASE_PART_ID = C.DISEASE_PART_ID
+		JOIN BODY_CLASSIFICATION BC ON B.BODY_PART_ID = BC.BODY_PART_ID
+		LEFT JOIN FILESTORE F ON  B.FILEONE = F.FILESTORE_ID
+		WHERE (B.CONTENT LIKE '%'|| #{keyword} || '%' OR B.TITLE LIKE '%'|| #{keyword} || '%')
+		ORDER BY B.DISEASE_NAME
+	</select>
+	 
+	
+	<select id="getDiseaseBoardByDiseasePartAndSearchKeyword" resultType="diseaseBoardDTO">
+		SELECT B.DISEASE_BOARD_ID, B.DISEASE_NAME, B.DISEASE_PART_ID, C.DISEASE_PART_NAME, B.BODY_PART_ID, BC.BODY_PART_NAME, B.TITLE, B.DISEASE_NAME
+		        , B.CONTENT, B.FILEONE, F.FILE_PATH, F.FILESTORE_ID, B.BOARD_COUNT, B.CREATED_AT, B.UPDATED_AT
+		        , COUNT(*) OVER () AS TOTAL_COUNT
+		FROM DISEASE_BOARD B
+		JOIN DISEASE_CLASSIFICATION C ON B.DISEASE_PART_ID = C.DISEASE_PART_ID
+		JOIN BODY_CLASSIFICATION BC ON B.BODY_PART_ID = BC.BODY_PART_ID
+		LEFT JOIN FILESTORE F ON  B.FILEONE = F.FILESTORE_ID
+		WHERE B.DISEASE_PART_ID = #{diseasePartId}
+		<if test="keyword != null">
+		AND (B.CONTENT LIKE '%'|| #{keyword} || '%' OR B.TITLE LIKE '%'|| #{keyword} || '%')
+		</if>
+		ORDER BY B.DISEASE_NAME
+	</select>
+	
+	<select id="getHealthBoardByKeyword" resultType="healthBoardVO">
+		SELECT * FROM HEALTH_BOARD WHERE ( CONTENT LIKE '%' || #{keyword} || '%' OR TITLE LIKE '%' || #{keyword} || '%' )
+		ORDER BY TITLE
+	</select>
+	
+	<select id="getDiseaseClassificationById" resultType="diseaseClassificationVO">
+		SELECT * FROM DISEASE_CLASSIFICATION WHERE DISEASE_PART_ID = #{diseasePartId}
+	</select>
+
+	<update id="updateDiseasePartName">
+		UPDATE DISEASE_CLASSIFICATION
+		SET DISEASE_PART_NAME = #{diseasePartName}
+		WHERE DISEASE_PART_ID = #{diseasePartId}
+	</update>
+	
+	<insert id="insertDiseaseClassification">
+		INSERT INTO DISEASE_CLASSIFICATION
+		(DISEASE_PART_ID, DISEASE_PART_NAME)
+		VALUES(DISEASE_CLASSIFICATION_SEQ.NEXTVAL, #{inputText})
+	</insert>
+	
+	<delete id="deleteDiseaseClassification">
+		DELETE FROM DISEASE_CLASSIFICATION WHERE DISEASE_PART_ID IN
+		<foreach item="id" collection="selectedId" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+	
+	<insert id="insertBodyClassification">
+		INSERT INTO BODY_CLASSIFICATION
+		(BODY_PART_ID, BODY_PART_NAME)
+		VALUES(BODY_CLASSIFICATION_SEQ.NEXTVAL, #{inputText})
+	</insert>
+	
+	<delete id="deleteBodyClassification">
+		DELETE FROM BODY_CLASSIFICATION WHERE BODY_PART_ID IN
+		<foreach item="id" collection="selectedId" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+	
+	<select id="getBodyClassificationById" resultType="bodyClassificationVO">
+		SELECT * FROM BODY_CLASSIFICATION WHERE BODY_PART_ID = #{bodyPartId}
+	</select>
+	
+	<update id="updateBodyPartName">
+		UPDATE BODY_CLASSIFICATION
+		SET BODY_PART_NAME = #{bodyPartName}
+		WHERE BODY_PART_ID = #{bodyPartId}
+	</update>
+	
+	<insert id="insertDiseaseBoard">
+		INSERT INTO DISEASE_BOARD
+		<if test="filestoreId == null">
+			(DISEASE_BOARD_ID, DISEASE_PART_ID, BODY_PART_ID, DISEASE_NAME, TITLE, CONTENT)
+			VALUES(DISEASE_BOARD_SEQ.NEXTVAL, #{diseasePartId}, #{bodyPartId}, #{diseaseName}, #{title}, #{content})
+		</if>
+		<if test="filestoreId != null">
+			(DISEASE_BOARD_ID, DISEASE_PART_ID, BODY_PART_ID, DISEASE_NAME, TITLE, CONTENT, FILEONE)
+			VALUES(DISEASE_BOARD_SEQ.NEXTVAL, #{diseasePartId}, #{bodyPartId}, #{diseaseName}, #{title}, #{content}, #{filestoreId})
+		</if>
+	</insert>
+	
+	<delete id="deleteDiseaseBoard">
+		DELETE FROM DISEASE_BOARD WHERE DISEASE_BOARD_ID IN
+		<foreach item="id" collection="selectedId" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+	
+	<select id="searchByCalendarDiseaseBoard" resultType="diseaseBoardDTO">
+		SELECT B.DISEASE_BOARD_ID, B.DISEASE_NAME, B.DISEASE_PART_ID, C.DISEASE_PART_NAME, B.BODY_PART_ID, BC.BODY_PART_NAME, B.TITLE, B.DISEASE_NAME
+		        , B.CONTENT, B.FILEONE, F.FILE_PATH, F.FILESTORE_ID, B.BOARD_COUNT, B.CREATED_AT, B.UPDATED_AT, COUNT(*) OVER () AS TOTAL_COUNT
+		FROM DISEASE_BOARD B
+		JOIN DISEASE_CLASSIFICATION C ON B.DISEASE_PART_ID = C.DISEASE_PART_ID
+		JOIN BODY_CLASSIFICATION BC ON B.BODY_PART_ID = BC.BODY_PART_ID
+		LEFT JOIN FILESTORE F ON  B.FILEONE = F.FILESTORE_ID
+		<if test="startDate == endDate">
+		WHERE TRUNC(B.CREATED_AT) = TO_DATE(#{startDate}, 'YYYY-MM-DD')
+		</if>
+		<if test="startDate != endDate">
+		WHERE TRUNC(B.CREATED_AT) BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD')
+    								AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+		</if>
+		ORDER BY B.DISEASE_NAME 
+	</select>
+	
+	<select id="searchByTermDiseaseBoard" resultType="diseaseBoardDTO">
+		SELECT B.DISEASE_BOARD_ID, B.DISEASE_NAME, B.DISEASE_PART_ID, C.DISEASE_PART_NAME, B.BODY_PART_ID, BC.BODY_PART_NAME, B.TITLE, B.DISEASE_NAME
+		        , B.CONTENT, B.FILEONE, F.FILE_PATH, F.FILESTORE_ID, B.BOARD_COUNT, B.CREATED_AT, B.UPDATED_AT, COUNT(*) OVER () AS TOTAL_COUNT
+		FROM DISEASE_BOARD B
+		JOIN DISEASE_CLASSIFICATION C ON B.DISEASE_PART_ID = C.DISEASE_PART_ID
+		JOIN BODY_CLASSIFICATION BC ON B.BODY_PART_ID = BC.BODY_PART_ID
+		LEFT JOIN FILESTORE F ON  B.FILEONE = F.FILESTORE_ID
+		
+		WHERE TRUNC(B.CREATED_AT) BETWEEN
+		<choose>
+			<when test="term == 'oneDay'">
+				TRUNC(SYSDATE - 1)
+			</when>
+			<when test="term == 'oneWeek'">
+				TRUNC(SYSDATE - 7)
+			</when>
+			<when test="term == 'oneMonth'">
+				TRUNC(ADD_MONTHS(SYSDATE, -1))
+			</when>
+			<otherwise>
+				NULL
+			</otherwise>
+		</choose>
+		AND TRUNC(SYSDATE)
+		ORDER BY B.DISEASE_NAME
+	</select>
+	
+	<select id="searchDiseaseBoardByTitleOrContentAndKeyword" resultType="diseaseBoardDTO">
+		SELECT B.DISEASE_BOARD_ID, B.DISEASE_NAME, B.DISEASE_PART_ID, C.DISEASE_PART_NAME, B.BODY_PART_ID, BC.BODY_PART_NAME, B.TITLE, B.DISEASE_NAME
+		        , B.CONTENT, B.FILEONE, F.FILE_PATH, F.FILESTORE_ID, B.BOARD_COUNT, B.CREATED_AT, B.UPDATED_AT, COUNT(*) OVER () AS TOTAL_COUNT
+		FROM DISEASE_BOARD B
+		JOIN DISEASE_CLASSIFICATION C ON B.DISEASE_PART_ID = C.DISEASE_PART_ID
+		JOIN BODY_CLASSIFICATION BC ON B.BODY_PART_ID = BC.BODY_PART_ID
+		LEFT JOIN FILESTORE F ON  B.FILEONE = F.FILESTORE_ID
+		<if test="searchTopic == 'title'">
+			WHERE B.TITLE LIKE '%' || #{keyword} || '%'
+		</if>
+		<if test="searchTopic == 'content'">
+			WHERE B.CONTENT LIKE '%' || #{keyword} || '%'
+		</if>
+		ORDER BY B.DISEASE_NAME
+	</select>
+	
+	<select id="searchDiseaseBoardByClassification" resultType="diseaseBoardDTO">
+		SELECT B.DISEASE_BOARD_ID, B.DISEASE_NAME, B.DISEASE_PART_ID, C.DISEASE_PART_NAME, B.BODY_PART_ID, BC.BODY_PART_NAME, B.TITLE, B.DISEASE_NAME
+		        , B.CONTENT, B.FILEONE, F.FILE_PATH, F.FILESTORE_ID, B.BOARD_COUNT, B.CREATED_AT, B.UPDATED_AT, COUNT(*) OVER () AS TOTAL_COUNT
+		FROM DISEASE_BOARD B
+		JOIN DISEASE_CLASSIFICATION C ON B.DISEASE_PART_ID = C.DISEASE_PART_ID
+		JOIN BODY_CLASSIFICATION BC ON B.BODY_PART_ID = BC.BODY_PART_ID
+		LEFT JOIN FILESTORE F ON  B.FILEONE = F.FILESTORE_ID
+		<if test="searchTopic == 'body'">
+			WHERE B.BODY_PART_ID = #{selectedPartId}
+		</if>
+		<if test="searchTopic == 'disease'">
+			WHERE B.DISEASE_PART_ID = #{selectedPartId}
+		</if>
+		ORDER BY B.DISEASE_NAME
+	</select>
+	
+	<update id="updateDiseaseBoardExceptFile">
+		UPDATE DISEASE_BOARD
+		SET DISEASE_PART_ID = #{diseasePartId}
+			, BODY_PART_ID = #{bodyPartId}
+			, DISEASE_NAME = #{diseaseName}
+			, TITLE = #{title}
+			, CONTENT = #{content}
+		WHERE DISEASE_BOARD_ID = #{diseaseBoardId}
+	</update>
+	
+	<update id="updateDiseaseBoardWithFile">
+		UPDATE DISEASE_BOARD
+		SET DISEASE_PART_ID = #{diseasePartId}
+			, BODY_PART_ID = #{bodyPartId}
+			, DISEASE_NAME = #{diseaseName}
+			, TITLE = #{title}
+			, CONTENT = #{content}
+			, FILEONE = #{filestoreId}
+		WHERE DISEASE_BOARD_ID = #{diseaseBoardId}
+	</update>
+	
+	<select id="getDiseaseBoardTotalCount" resultType="diseaseBoardTotalCountDTO">
+		SELECT COUNT(*) AS TOTAL_COUNT
+		FROM DISEASE_BOARD
+	</select>
+	
+	<!-- 질환게시판 페이지네이션 -->
+	<select id="getDiseaseBoardPage" resultType="diseaseBoardDTO">
+		 SELECT *
+		FROM (
+		    SELECT T.*,
+		           ROWNUM AS rnum
+		    FROM (
+		        SELECT B.DISEASE_BOARD_ID,
+		               B.DISEASE_NAME,
+		               B.DISEASE_PART_ID,
+		               C.DISEASE_PART_NAME,
+		               B.BODY_PART_ID,
+		               BC.BODY_PART_NAME,
+		               B.TITLE,
+		               B.CONTENT,
+		               B.FILEONE,
+		               F.FILE_PATH,
+		               F.FILESTORE_ID,
+		               B.BOARD_COUNT,
+		               B.CREATED_AT,
+		               B.UPDATED_AT,
+		               COUNT(*) OVER() AS TOTAL_COUNT
+		        FROM DISEASE_BOARD B
+		        JOIN DISEASE_CLASSIFICATION C 
+		               ON B.DISEASE_PART_ID = C.DISEASE_PART_ID
+		        JOIN BODY_CLASSIFICATION BC 
+		               ON B.BODY_PART_ID = BC.BODY_PART_ID
+		        LEFT JOIN FILESTORE F 
+		               ON B.FILEONE = F.FILESTORE_ID
+		        ORDER BY B.DISEASE_NAME    
+		    ) T
+		    WHERE ROWNUM <![CDATA[ <= ]]> #{endRow}            
+		)
+		WHERE rnum <![CDATA[ >= ]]> #{startRow}
+		   
+	</select>
+
+	<insert id="insertExaminationBoard">
+		INSERT INTO EXAMINATION_BOARD
+		<if test="filestoreId == null">
+			(EXAMINATION_ID, BODY_PART_ID, EXAMINATION_NAME, CONTENT)
+			VALUES(EXAMINATION_BOARD_SEQ.NEXTVAL, #{bodyPartId}, #{examinationName}, #{content})
+		</if>
+		<if test="filestoreId != null">
+			(EXAMINATION_ID, BODY_PART_ID, EXAMINATION_NAME, CONTENT, FILEONE)
+			VALUES(EXAMINATION_BOARD_SEQ.NEXTVAL, #{bodyPartId}, #{examinationName}, #{content}, #{filestoreId})
+		</if>
+	</insert>
+	
+	<select id="getExaminationBoardTotalCount" resultType="examinationBoardPageDTO">
+		SELECT COUNT(*) AS TOTAL_COUNT
+		FROM EXAMINATION_BOARD
+	</select>
+	
+	<select id="getExaminationBoardPage" resultType="examinationBoardDTO">
+		SELECT *
+			FROM (
+			    SELECT T.*,
+			           ROWNUM AS rnum
+			    FROM (
+			        SELECT E.EXAMINATION_ID,
+			               E.EXAMINATION_NAME,
+			               E.BODY_PART_ID,
+			               BC.BODY_PART_NAME,
+			               E.CONTENT,
+			               E.FILEONE,
+			               F.FILE_PATH,
+			               F.FILESTORE_ID,
+			               E.BOARD_COUNT,
+			               E.CREATED_AT,
+			               E.UPDATED_AT,
+			               COUNT(*) OVER() AS TOTAL_COUNT
+			        FROM EXAMINATION_BOARD E
+			        JOIN BODY_CLASSIFICATION BC 
+			               ON E.BODY_PART_ID = BC.BODY_PART_ID
+			        LEFT JOIN FILESTORE F 
+			               ON E.FILEONE = F.FILESTORE_ID
+			        ORDER BY E.EXAMINATION_NAME    
+			    ) T
+			    WHERE ROWNUM <![CDATA[ <= ]]> #{endRow}       
+			)
+			WHERE rnum <![CDATA[ >= ]]> #{startRow} 
+	</select>
+	
+	
+	<select id="searchExaminationBoardByBodyClassification" resultType="examinationBoardDTO">
+		SELECT  COUNT(*) OVER () AS TOTAL_COUNT, E.EXAMINATION_ID, E.EXAMINATION_NAME, E.BODY_PART_ID, BC.BODY_PART_NAME,
+		        E.CONTENT, E.FILEONE, F.FILE_PATH, F.FILESTORE_ID, E.BOARD_COUNT, E.CREATED_AT, E.UPDATED_AT
+		FROM EXAMINATION_BOARD E
+		JOIN BODY_CLASSIFICATION BC ON E.BODY_PART_ID = BC.BODY_PART_ID
+		LEFT JOIN FILESTORE F ON  E.FILEONE = F.FILESTORE_ID
+        WHERE E.BODY_PART_ID = #{selectedPartId}
+		ORDER BY E.EXAMINATION_NAME
+	</select>
+	
+	<select id="searchExaminationBoardByBodyClassificationPage" resultType="examinationBoardPageDTO">
+		SELECT * FROM (
+	    SELECT 
+	        a.*,
+	        ROWNUM rnum
+	    FROM (
+	        SELECT 
+	            COUNT(*) OVER () AS TOTAL_COUNT,
+	            E.EXAMINATION_ID,
+	            E.EXAMINATION_NAME,
+	            E.BODY_PART_ID,
+	            BC.BODY_PART_NAME,
+	            E.CONTENT,
+	            E.FILEONE,
+	            F.FILE_PATH,
+	            F.FILESTORE_ID,
+	            E.BOARD_COUNT,
+	            E.CREATED_AT,
+	            E.UPDATED_AT
+	        FROM EXAMINATION_BOARD E
+	        JOIN BODY_CLASSIFICATION BC ON E.BODY_PART_ID = BC.BODY_PART_ID
+	        LEFT JOIN FILESTORE F ON E.FILEONE = F.FILESTORE_ID
+	        WHERE E.BODY_PART_ID = #{selectedPartId}
+	        ORDER BY E.EXAMINATION_NAME
+	    ) a
+	    WHERE ROWNUM <![CDATA[ <= ]]> #{endRow} 
+	)
+	WHERE rnum <![CDATA[ >= ]]> #{startRow} 
+	</select>
+	
+	<select id="searchExaminationBoardByTitleOrContentAndKeyword" resultType="examinationBoardDTO">
+		SELECT  COUNT(*) OVER () AS TOTAL_COUNT, E.EXAMINATION_ID, E.EXAMINATION_NAME, E.BODY_PART_ID, BC.BODY_PART_NAME,
+			        E.CONTENT, E.FILEONE, F.FILE_PATH, F.FILESTORE_ID, E.BOARD_COUNT, E.CREATED_AT, E.UPDATED_AT
+			FROM EXAMINATION_BOARD E
+			JOIN BODY_CLASSIFICATION BC ON E.BODY_PART_ID = BC.BODY_PART_ID
+			LEFT JOIN FILESTORE F ON  E.FILEONE = F.FILESTORE_ID
+		<if test="searchTopic == 'title'">
+	        WHERE E.EXAMINATION_NAME LIKE '%' || #{keyword} || '%'
+		</if>
+		<if test="searchTopic == 'content'">
+			WHERE E.CONTENT LIKE '%' || #{keyword} || '%'
+		</if>
+		ORDER BY E.EXAMINATION_NAME
+	</select>
+	
+	<select id="searchByCalendarExaminationBoard" resultType="examinationBoardDTO">
+		SELECT  COUNT(*) OVER () AS TOTAL_COUNT, E.EXAMINATION_ID, E.EXAMINATION_NAME, E.BODY_PART_ID, BC.BODY_PART_NAME,
+			        E.CONTENT, E.FILEONE, F.FILE_PATH, F.FILESTORE_ID, E.BOARD_COUNT, E.CREATED_AT, E.UPDATED_AT
+		FROM EXAMINATION_BOARD E
+		JOIN BODY_CLASSIFICATION BC ON E.BODY_PART_ID = BC.BODY_PART_ID
+		LEFT JOIN FILESTORE F ON  E.FILEONE = F.FILESTORE_ID
+		<if test="startDate == endDate">
+			WHERE TRUNC(E.CREATED_AT) = TO_DATE(#{startDate}, 'YYYY-MM-DD')
+		</if>
+		<if test="startDate != endDate">
+			WHERE TRUNC(E.CREATED_AT) BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD')
+	    								AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+		</if>
+			ORDER BY E.EXAMINATION_NAME
+	</select>
+	
+	<select id="searchByTermExaminationBoard" resultType="examinationBoardDTO">
+		SELECT  COUNT(*) OVER () AS TOTAL_COUNT, E.EXAMINATION_ID, E.EXAMINATION_NAME, E.BODY_PART_ID, BC.BODY_PART_NAME,
+			        E.CONTENT, E.FILEONE, F.FILE_PATH, F.FILESTORE_ID, E.BOARD_COUNT, E.CREATED_AT, E.UPDATED_AT
+		FROM EXAMINATION_BOARD E
+		JOIN BODY_CLASSIFICATION BC ON E.BODY_PART_ID = BC.BODY_PART_ID
+		LEFT JOIN FILESTORE F ON  E.FILEONE = F.FILESTORE_ID
+		
+		WHERE TRUNC(E.CREATED_AT) BETWEEN
+		<choose>
+			<when test="term == 'oneDay'">
+				TRUNC(SYSDATE - 1)
+			</when>
+			<when test="term == 'oneWeek'">
+				TRUNC(SYSDATE - 7)
+			</when>
+			<when test="term == 'oneMonth'">
+				TRUNC(ADD_MONTHS(SYSDATE, -1))
+			</when>
+			<otherwise>
+				NULL
+			</otherwise>
+		</choose>
+		AND TRUNC(SYSDATE)
+		ORDER BY E.EXAMINATION_NAME
+	</select>
+	
+	
+	
+	
+	
+	<delete id="deleteExaminationBoard">
+		DELETE FROM EXAMINATION_BOARD WHERE EXAMINATION_ID IN
+		<foreach item="id" collection="selectedId" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+	
+	<update id="updateExaminationBoardExceptFile">
+		UPDATE EXAMINATION_BOARD
+		SET BODY_PART_ID = #{bodyPartId}
+			, EXAMINATION_NAME = #{examinationName}
+			, CONTENT = #{content}
+		WHERE EXAMINATION_ID = #{examinationId}
+	</update>
+	
+	<update id="updateExaminationBoardWithFile">
+		UPDATE EXAMINATION_BOARD
+		SET BODY_PART_ID = #{bodyPartId}
+			, EXAMINATION_NAME = #{examinationName}
+			, CONTENT = #{content}
+			, FILEONE = #{filestoreId}
+		WHERE EXAMINATION_ID = #{examinationId}
+	</update>
+	
+	<update id="updateExaminationBoardDeleteFile">
+		UPDATE EXAMINATION_BOARD
+		SET BODY_PART_ID = #{bodyPartId}
+			, EXAMINATION_NAME = #{examinationName}
+			, CONTENT = #{content}
+			, FILEONE = null
+		WHERE EXAMINATION_ID = #{examinationId}
+	</update>
+	
+	
+	<select id="getHealthBoardTotalCount" resultType="healthBoardPageDTO">
+		SELECT COUNT(*) AS TOTAL_COUNT
+		FROM HEALTH_BOARD
+	</select>
+	
+	<select id="searchHealthBoardByTitleOrContentAndKeyword" resultType="healthBoardDTO">
+		SELECT COUNT(*) OVER () AS TOTAL_COUNT, H.HB_ID, H.TITLE, H.CONTENT
+				, H.FILEONE, F.FILE_PATH, F.FILESTORE_ID, H.BOARD_COUNT, H.CREATED_AT, H.UPDATED_AT
+		FROM HEALTH_BOARD H 
+		LEFT JOIN FILESTORE F ON H.FILEONE = F.FILESTORE_ID
+		<if test="searchTopic == 'title'">
+			WHERE H.TITLE LIKE '%' || #{keyword} ||'%'
+		</if>
+		<if test="searchTopic == 'content'">
+			WHERE H.CONTENT LIKE '%' || #{keyword} ||'%'
+		</if>
+		ORDER BY H.TITLE
+	</select>
+	
+	<select id="searchByCalendarHealthBoard" resultType="healthBoardDTO">
+		SELECT COUNT(*) OVER () AS TOTAL_COUNT, H.HB_ID, H.TITLE, H.CONTENT
+				, H.FILEONE, F.FILE_PATH, F.FILESTORE_ID, H.BOARD_COUNT, H.CREATED_AT, H.UPDATED_AT
+		FROM HEALTH_BOARD H 
+		LEFT JOIN FILESTORE F ON H.FILEONE = F.FILESTORE_ID
+		<if test="startDate == endDate">
+			WHERE TRUNC(H.CREATED_AT) = TO_DATE(#{startDate}, 'YYYY-MM-DD')
+		</if>
+		<if test="startDate != endDate">
+			WHERE TRUNC(H.CREATED_AT) BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD')
+    										AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+		</if>
+		ORDER BY H.TITLE
+	</select>
+	
+	<select id="getHealthBoardListPage" resultType="healthBoardDTO">
+		SELECT * FROM (
+		    SELECT 
+		        a.*,
+		        ROWNUM rnum
+		    FROM (
+		        SELECT 
+		            COUNT(*) OVER () AS TOTAL_COUNT,
+		            H.HB_ID,
+		            H.TITLE,
+		            H.CONTENT,
+		            H.FILEONE,
+		            F.FILE_PATH,
+		            F.FILESTORE_ID,
+		            H.BOARD_COUNT,
+		            H.CREATED_AT,
+		            H.UPDATED_AT
+		        FROM HEALTH_BOARD H
+		        LEFT JOIN FILESTORE F ON H.FILEONE = F.FILESTORE_ID
+		        ORDER BY H.TITLE
+		    ) a
+		    WHERE ROWNUM <![CDATA[ <= ]]> #{endRow} 
+			)
+		WHERE rnum <![CDATA[ >= ]]> #{startRow} 
+	</select>
+	
+	<select id="getHealthBoardCalendarPage" resultType="healthBoardDTO">
+		SELECT * 
+		FROM (
+		    SELECT 
+		        a.*,
+		        ROWNUM rnum
+		    FROM (
+		        SELECT 
+		            COUNT(*) OVER () AS TOTAL_COUNT,
+		            H.HB_ID,
+		            H.TITLE,
+		            H.CONTENT,
+		            H.FILEONE,
+		            F.FILE_PATH,
+		            F.FILESTORE_ID,
+		            H.BOARD_COUNT,
+		            H.CREATED_AT,
+		            H.UPDATED_AT
+		        FROM HEALTH_BOARD H
+		        LEFT JOIN FILESTORE F ON H.FILEONE = F.FILESTORE_ID
+		        WHERE 1 = 1
+		        <if test="startDate == endDate">
+		            AND TRUNC(H.CREATED_AT) = TO_DATE(#{startDate}, 'YYYY-MM-DD')
+		        </if>
+		        <if test="startDate != endDate">
+		            AND TRUNC(H.CREATED_AT) BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD')
+		                                         AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+		        </if>
+		        ORDER BY H.TITLE
+		    ) a
+		    WHERE ROWNUM <![CDATA[ <= ]]> #{endRow}
+		)
+		WHERE rnum <![CDATA[ >= ]]> #{startRow}
+	</select>
+	
+	<select id="searchByTermHealthBoard" resultType="healthBoardDTO">
+		SELECT COUNT(*) OVER () AS TOTAL_COUNT, H.HB_ID, H.TITLE, H.CONTENT
+				, H.FILEONE, F.FILE_PATH, F.FILESTORE_ID, H.BOARD_COUNT, H.CREATED_AT, H.UPDATED_AT
+		FROM HEALTH_BOARD H 
+		LEFT JOIN FILESTORE F ON H.FILEONE = F.FILESTORE_ID
+		
+		WHERE TRUNC(H.CREATED_AT) BETWEEN
+		<choose>
+			<when test="term == 'oneDay'">
+				TRUNC(SYSDATE - 1)
+			</when>
+			<when test="term == 'oneWeek'">
+				TRUNC(SYSDATE - 7)
+			</when>
+			<when test="term == 'oneMonth'">
+				TRUNC(ADD_MONTHS(SYSDATE, -1))
+			</when>
+			<otherwise>
+				NULL
+			</otherwise>
+		</choose>
+		AND TRUNC(SYSDATE)
+		ORDER BY H.TITLE
+	</select>
+	
+	<delete id="deleteHealthBoard">
+		DELETE FROM HEALTH_BOARD WHERE HB_ID IN
+		<foreach item="id" collection="selectedId" open="(" separator="," close=")">
+			#{id}
+		</foreach>	
+	</delete>
+	
+	<insert id="insertHealthBoard">
+		INSERT INTO HEALTH_BOARD
+		<if test="filestoreId == null">
+			(HB_ID, TITLE, CONTENT)
+			VALUES(HB_SEQ.NEXTVAL, #{title}, #{content})
+		</if>
+		<if test="filestoreId != null">
+			(HB_ID, TITLE, CONTENT, FILEONE)
+			VALUES(HB_SEQ.NEXTVAL, #{title}, #{content}, #{filestoreId})
+		</if>
+	</insert>
+	
+	<update id="updateHealthBoardExceptFile">
+		UPDATE HEALTH_BOARD
+		SET TITLE = #{title}
+			, CONTENT = #{content}
+		WHERE HB_ID = #{hbId}
+	</update>
+
+	<update id="updateHealthBoardWithFile">
+		UPDATE HEALTH_BOARD
+		SET TITLE = #{title}
+			, CONTENT = #{content}
+			, FILEONE = #{filestoreId}
+		WHERE HB_ID = #{hbId}
+	</update>
+	
+	
+	
+	
+	
+	
+</mapper>
+
+
+
+
+
+
+
+

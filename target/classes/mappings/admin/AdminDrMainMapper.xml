@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.project.hospital.dao.AdminDrMainDAO">
+	
+	<select id="getAllBoardCnt" parameterType="HashMap" resultType="HashMap">
+			
+		SELECT SUM(CASE WHEN ALL_TIME BETWEEN #{yesterStart} AND #{yesterEnd} THEN 1 ELSE 0 END) as YESTERDAY,
+       		   SUM(CASE WHEN ALL_TIME BETWEEN #{todayStart} AND #{todayEnd}  THEN 1 ELSE 0 END) as TODAY
+		FROM VW_ALLBOARD_DATE
+		
+	</select>
+	
+	
+</mapper>

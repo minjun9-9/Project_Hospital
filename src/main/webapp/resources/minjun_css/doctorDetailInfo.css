@@ -1,0 +1,80 @@
+@charset "UTF-8";
+
+
+.form-container{
+	display: flex;
+	align-items: center;
+	gap:10px;
+	margin: 0 auto;
+	flex-wrap: nowrap;
+}
+.group-select, .option-select{
+	display: inline-block;
+	width: auto;
+}
+.form-control{
+	width: 90%;
+	padding: 0.5rem;
+}
+.btn{
+	padding: 0.5rem 1rem;
+	display: flex;
+	align-items: center;
+}
+
+/* svg hover 없애기 */
+.btn-outline-success{
+	--bs-btn-hover-color: none;
+	--bs-btn-hover-bg: none;
+	--bs-btn-hover-border-color: none;
+}
+
+.doctor-info{
+	margin: 10px;
+}
+
+
+/* 
+.container {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+}
+
+.section-container {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	width: 100%;
+}
+
+.group-select,
+.option-select,
+.form-control-search {
+	padding: 5px;
+	font-size: 14px;
+	height: 35px;
+	width: 200px;
+	display: inline-block;
+}
+
+.btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 5px 10px;
+	font-size: 14px;
+}
+
+.search {
+	display: flex;
+	align-items: center;
+}
+
+select:focus{
+	width: 200px !important;
+}
+select {
+	box-sizing: border-box;
+}
+ */

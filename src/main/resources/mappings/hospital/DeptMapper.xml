@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dept">
+
+	<select id="deptList" parameterType="hospitalVO" resultType="deptVO">
+		SELECT *
+		FROM DEPT
+		WHERE HP_ID = #{hpId}
+		AND QUIT = '0'
+		ORDER BY DEPT_NAME
+	</select>
+	
+</mapper>
+
+
+
+
+
+
+

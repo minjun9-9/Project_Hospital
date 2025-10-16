@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.project.hospital.dao.RecordDAO">
+	
+	<!-- 레코드 카운트  조회 -->
+	<select id="getRecordCount" parameterType="hashMap" resultType="int">
+	
+		SELECT COUNT(*)
+		FROM RECORD
+		WHERE USER_NUM = #{userNum}
+		AND CREATED_AT BETWEEN #{startDate} AND #{endDate}
+		ORDER BY CREATED_AT
+		
+	</select>
+	
+	<select id="findRecordListForPage" parameterType="HashMap" resultType="responseRecordDTO">
+		<![CDATA[
+		SELECT *
+		FROM(SELECT ROWNUM RNUM, T.*
+		     FROM (SELECT A.RECORD_TYPE, D.DEPT_NAME, A.DR_NAME, A.CREATED_AT, A.TREATMENT_PERIOD, A.COST
+		          FROM DEPT D, (SELECT HM.DEPT_ID, HM.DR_NAME, R.RECORD_TYPE, R.COST, R.TREATMENT_PERIOD, R.CREATED_AT
+		                        FROM HP_MEMBER HM, (SELECT DR_ID, RECORD_TYPE, COST, TREATMENT_PERIOD, CREATED_AT
+		                                            FROM RECORD
+		                                            WHERE USER_NUM = #{userNum}
+		                                            AND CREATED_AT BETWEEN #{startDate} AND #{endDate}) R
+		                        WHERE HM.DR_ID = R.DR_ID) A
+		          WHERE D.DEPT_ID = A.DEPT_ID
+		          ORDER BY A.CREATED_AT) T
+		     WHERE ROWNUM <= #{end})
+		WHERE RNUM >= #{begin}
+		]]>
+	</select>
+	
+</mapper>
+
+
+
+
+
+
+

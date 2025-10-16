@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.project.hospital.dao.UserClientMapperDAO">
+
+	<!-- 회원 가입 수  오늘/이번달/전체  -->
+	<select id="getJoinCnt" parameterType="HashMap" resultType="userJoinCntGraphDTO">
+		
+		 SELECT SUM(CASE WHEN CREATED_AT BETWEEN #{todayStart} AND #{todayEnd} THEN 1 ELSE 0 END) AS TODAY_CNT,
+			    SUM(CASE WHEN CREATED_AT BETWEEN #{monthStart} AND #{monthEnd} THEN 1 ELSE 0 END) AS MONTH_CNT,
+			    COUNT(*) AS TOTAL_CNT
+		 FROM USER_CLIENT
+		
+	</select>
+	
+	<!-- 연도별/ 월별 회원가입 수  -->
+	<select id="getGraphCnt" parameterType="HashMap"  resultType="monthCntDTO">
+	
+		<foreach collection="years" item="year" separator="UNION">
+		SELECT #{year} as "year",
+		    <foreach collection="months" item="month" separator=",">
+		       SUM(CASE WHEN CREATED_AT BETWEEN 
+		        #{year} || '-' || LPAD(#{month}, 2, '0') || '-01 00:00:00' 
+		        AND 
+		        #{year} || '-' || LPAD(#{month}, 2, '0') || '-' || 
+		        TO_CHAR(LAST_DAY(#{year} || '-' || LPAD(#{month}, 2, '0') || '-01'), 'DD') || ' 23:59:59' 
+      			THEN 1 ELSE 0 END) AS "month_${month}"
+		    </foreach>
+		    
+		FROM USER_CLIENT
+	    </foreach>
+	</select>
+	
+	
+</mapper>
+
+
+
+
+
+
+

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="qnaDAO">
+
+	<!-- 일단은 파일 다 불러오는데 뭔가 파일 몇개 존재하면 불러오고 이런 로직 추가해야할 거 같음 -->
+	
+	<select id="getQnaList" resultType="qnaDTO">
+		SELECT Q.QNA_ID, U.USER_NUM, U.USER_NAME, Q.TITLE, Q.CONTENT
+			, Q.FILEONE, Q.FILETWO, Q.FILETHREE
+	        , Q.REPLY, Q.REPLY_AT, Q.CREATED_AT, Q.UPDATED_AT, Q.RELATION
+	        , Q.QNA_TYPE
+		FROM QNA_BOARD Q, USER_CLIENT U
+		WHERE U.QUIT = '0'
+		AND Q.USER_NUM = U.USER_NUM
+		ORDER BY Q.CREATED_AT DESC
+	</select>
+	
+	 <select id="getQna" parameterType="string" resultType="qnaDTO">
+		SELECT * FROM QNA_BOARD WHERE QNA_ID = #{qnaId}
+	</select>
+	
+	<insert id="insertQnaNoFile">
+		INSERT INTO QNA_BOARD
+		(QNA_ID, USER_NUM, RELATION, QNA_TYPE, TITLE, CONTENT)
+		VALUES (QNA_ID_SEQ.NEXTVAL, (SELECT USER_NUM
+		                            FROM USER_CLIENT
+		                            WHERE QUIT = '0'
+		                            AND USER_ID = #{userId}
+		                            AND USER_NAME = #{userName}
+		                            AND USER_EMAIL = #{userEmail} 
+		                            AND USER_PHONE_NUM = #{userPhoneNum})	
+		       , #{relation}, #{qnaType}, #{title}, #{content}  )
+	</insert>
+	
+	<insert id="insertQnaWithFile" parameterType="java.util.Map">
+		<if test="dto.uploadFileCount == 1">
+			INSERT INTO QNA_BOARD
+			(QNA_ID, USER_NUM, RELATION, QNA_TYPE, TITLE, CONTENT, FILEONE)
+			VALUES (QNA_ID_SEQ.NEXTVAL, (SELECT USER_NUM
+			                            FROM USER_CLIENT
+			                            WHERE QUIT = '0'
+			                            AND USER_ID = #{dto.userId}
+			                            AND USER_NAME = #{dto.userName}
+			                            AND USER_EMAIL = #{dto.userEmail} 
+			                            AND USER_PHONE_NUM = #{dto.userPhoneNum})	
+			       , #{dto.relation}, #{dto.qnaType}, #{dto.title}, #{dto.content}
+			       , (SELECT FILESTORE_ID
+                      FROM FILESTORE
+                      WHERE FILE_PATH = #{filePath0}))
+		</if>
+		<if test="dto.uploadFileCount == 2">
+			INSERT INTO QNA_BOARD
+			(QNA_ID, USER_NUM, RELATION, QNA_TYPE, TITLE, CONTENT, FILEONE, FILETWO)
+			VALUES (QNA_ID_SEQ.NEXTVAL, (SELECT USER_NUM
+			                            FROM USER_CLIENT
+			                            WHERE QUIT = '0'
+			                            AND USER_ID = #{dto.userId}
+			                            AND USER_NAME = #{dto.userName}
+			                            AND USER_EMAIL = #{dto.userEmail} 
+			                            AND USER_PHONE_NUM = #{dto.userPhoneNum})	
+			       , #{dto.relation}, #{dto.qnaType}, #{dto.title}, #{dto.content}
+			       , (SELECT FILESTORE_ID
+                      FROM FILESTORE
+                      WHERE FILE_PATH = #{filePath0})
+                   , (SELECT FILESTORE_ID
+                      FROM FILESTORE
+                      WHERE FILE_PATH = #{filePath1})
+                   )
+		</if>
+		<if test="dto.uploadFileCount == 3">
+			INSERT INTO QNA_BOARD
+			(QNA_ID, USER_NUM, RELATION, QNA_TYPE, TITLE, CONTENT, FILEONE, FILETWO, FILETHREE)
+			VALUES (QNA_ID_SEQ.NEXTVAL, (SELECT USER_NUM
+			                            FROM USER_CLIENT
+			                            WHERE QUIT = '0'
+			                            AND USER_ID = #{dto.userId}
+			                            AND USER_NAME = #{dto.userName}
+			                            AND USER_EMAIL = #{dto.userEmail} 
+			                            AND USER_PHONE_NUM = #{dto.userPhoneNum})	
+			       , #{dto.relation}, #{dto.qnaType}, #{dto.title}, #{dto.content}
+			       , (SELECT FILESTORE_ID
+                      FROM FILESTORE
+                      WHERE FILE_PATH = #{filePath0})
+                   , (SELECT FILESTORE_ID
+                      FROM FILESTORE
+                      WHERE FILE_PATH = #{filePath1})
+                   , (SELECT FILESTORE_ID
+                      FROM FILESTORE
+                      WHERE FILE_PATH = #{filePath2})
+                   )
+		</if>
+	</insert>
+	
+	<update id="replyQna">
+		UPDATE QNA_BOARD
+		SET REPLY = #{reply}
+		WHERE QNA_ID = #{qnaId}
+	</update>
+	
+	<select id="getReply" resultType="qnaDTO">
+		SELECT TITLE, REPLY FROM QNA_BOARD WHERE QNA_ID = #{qnaId}
+	</select>
+	
+	<delete id="deleteQna" parameterType="java.util.List">
+		DELETE FROM QNA_BOARD WHERE QNA_ID IN
+		<foreach collection="list" item="id" open="(" separator="," close=")"> 
+			 #{id}
+		</foreach>
+	</delete>
+	
+	<delete id="deleteSingleQna">
+		DELETE FROM QNA_BOARD WHERE QNA_ID = #{qnaId}
+	</delete>
+
+</mapper>
+
+
+
+
+
+
+

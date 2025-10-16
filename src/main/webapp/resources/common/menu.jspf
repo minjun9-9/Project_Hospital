@@ -1,0 +1,69 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+    
+<div class="menu bg_1">
+			<div class="title bor_1"><a href="${pageContext.request.contextPath}/main/mainPage">협력병원</a></div>
+			<div class="gnb_box">
+				<ul class="gnb_1st" style="padding: 0px;">
+				
+					<!-- <li class="have_sub">
+						 class="on" 해당페이지 클릭했을때 action 역할
+						<a href="#">의료진 관리</a>
+						<ul class="gnb_2nd">
+							<li><a href="#">의료진 관리</a></li>
+							<li><a href="#">의료진 등록</a></li>
+						</ul>
+					</li>
+					
+					<li class="have_sub">
+						<a href="#">진료과 관리</a>
+						<ul class="gnb_2nd">
+							<li><a href="#">예시 메뉴01</a></li>
+							<li><a href="#">예시 메뉴02</a></li>
+							<li><a href="#">예시 메뉴03</a></li>
+						</ul>
+					</li> -->
+					<li class="have_sub">
+						<a href="#">협력병원 관리</a>
+						<ul class="gnb_2nd">
+							<%-- <li><a href="${pageContext.request.contextPath}/hospital/hospitalSearchList">협력병원 현황</a></li> --%>
+							<li><a href="${pageContext.request.contextPath}/hospital/hospitalInsert">협력병원 등록</a></li>
+							<li><a href="${pageContext.request.contextPath}/hospital/hospitalList">협력병원 관리</a></li>
+						</ul>
+					</li>
+					<%-- <li class="have_sub">
+						<a href="#">진료예약</a>
+						<ul class="gnb_2nd">
+							<li><a href="${pageContext.request.contextPath}/reservation/deptList?hpId=SSW">진료예약 등록</a></li>
+							<li><a href="${pageContext.request.contextPath}/reservation/reservationList?userNum=241227006">진료예약 조회</a></li>
+						</ul>
+					</li> --%>
+					
+					<!-- <li>
+						<a href="#">회원정보 관리</a>
+					</li> -->
+					
+					<li class="have_sub">
+						<a href="#">진료의뢰</a>
+						<ul class="gnb_2nd">
+							<li><a href="${pageContext.request.contextPath}/main/referralPage">받은 진료의뢰 조회</a></li>
+							<li><a href="${pageContext.request.contextPath}/main/sendReferralPage">보낸 진료의뢰 조회</a></li>
+						</ul>
+					</li>
+					
+					
+					<%-- <li>
+						<a href="${pageContext.request.contextPath}/main/goPage">등록페이지</a>
+					</li>
+					<li>
+						<a href="${pageContext.request.contextPath}/admin/adminDoctorCare">의사 페이지</a>
+					</li> --%>
+					
+					
+					<!-- <li>
+						<a href="#">분석</a>
+					</li> -->
+					
+				</ul>
+			</div>
+		</div>

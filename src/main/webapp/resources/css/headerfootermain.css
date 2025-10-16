@@ -1,0 +1,465 @@
+@charset "UTF-8";
+
+/* 공통 스타일 */
+.button-header {
+    text-decoration: none;
+    color: gray;
+}
+
+.log-button, .info {
+    background-color: white;
+    border: 0.5px solid gray;
+    color: gray;
+    align-items: center;
+    text-align: center;
+    padding: 0px;
+}
+.form-control-search {
+	border-radius: 15px;
+	padding: 10px;
+	border: 1px solid #ccc;
+}
+.search-flex{
+	text-align: center;
+	justify-content: center;
+}
+
+.search-dept{
+	align-items: center;
+	display: flex;
+	justify-content: center;
+	/* background-color: #007af4; */
+	padding: 40px 0px;
+	
+	background-image: url("https://media.istockphoto.com/id/1127069581/ko/%EC%82%AC%EC%A7%84/%EC%9D%98%EB%A3%8C-%EA%B8%B0%EC%88%A0-%EA%B0%9C%EB%85%90%EC%9E%85%EB%8B%88%EB%8B%A4.jpg?s=612x612&w=0&k=20&c=yblifmWLKNbjEYPjFYgcJrbckoHy_fgZ5AqOXEWF1QU=");
+	background-position: center;
+	background-size: cover;
+	
+	position: relative;
+	margin-top: -100px;
+	z-index: 10;
+}
+.carousel-control-prev{
+	position: absolute;
+	left: 0;
+	transform: translateY(-50%);
+	top: 50%;
+	z-index: 11;
+	height: 100%;
+	width: 10%;
+}
+.carousel-control-next{
+	position: absolute;
+	right: 0;
+	transform: translateY(-50%);
+	top: 50%;
+	z-index: 11;
+	height: 100%;
+	width: 10%;
+}
+
+.carousel-control-prev-icon, .carousel-control-next-icon{
+	width: 45px;
+	height: 45px;
+	font-weight: bold;
+	
+}
+.carousel-control-prev-icon:hover, .carousel-control-next-icon:hover{
+	color: yellow;
+}
+.index-main{
+	width: 100%;
+	margin: auto;
+	background-color: white;
+	padding-bottom: 30px;
+}
+.index-main-inner{
+	width: 1000px;
+	margin: auto;
+}
+.main-container{
+	min-height: 100%;
+}
+.container{
+	min-height: 100%;
+}
+.rect-info{
+	display: flex;
+	/* justify-content: space-around; */
+	width: 100%;
+	height: 240px;
+	align-items: center;
+	padding-top: 30px;
+}
+.rect-guide {
+	height: 100%;
+}
+.rect-guide:hover{
+	cursor: pointer;	
+}
+.rect-guide-img {
+	height: 80%;
+	align-items: center;
+	justify-content: center;
+	text-align:center;
+	align-content: center;
+}
+.rect-guide-span {
+	height: 20%;
+	color: black;
+}
+
+.rect-info a{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-decoration: none;
+	border: 1px solid gray;
+	width: 16.666%;
+}
+.rect-info a spna{
+	margin: 5px 0px;
+}
+.rect-info a span svg{
+	margin-bottom: 5px;
+}
+.title_docdept_srch{
+	font-size: 20px;
+	font-weight: bold;
+	color: #fef4a0;
+}
+h3.title_docdept_srch span{
+	font-size: 14px;
+	color: white;
+}
+/* 검색 input 숨김 처리 */
+.form-control {outline: none; box-shadow: none;} 
+.form-control {
+    display: none;
+    width: 200px;
+    height: 38px;
+}
+.form-control.show {
+    display: block;
+}
+
+/* 아이콘 색상 */
+.bi-search {
+    color: blue;
+    background-color: white;
+}
+
+.bi {
+    vertical-align: -.125em;
+    fill: currentColor;
+}
+
+.btn-secondary {
+    background-color: white;
+}
+
+.carousel-item img {
+    width: 100%;
+    height: 526px;
+}
+
+@media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+    }
+}
+
+.b-example-divider {
+    width: 100%;
+    height: 3rem;
+    background-color: rgba(0, 0, 0, .1);
+    border: solid rgba(0, 0, 0, .15);
+    border-width: 1px 0;
+    box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+}
+
+.nav-scroller .nav {
+    display: flex;
+    flex-wrap: nowrap;
+    padding-bottom: 1rem;
+    margin-top: -1px;
+    overflow-x: auto;
+    text-align: center;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* hover시 표시하기 */
+.nav-header-item:hover{
+	border-bottom: 1px solid black;
+}
+.nav-link{
+	color: black;
+}
+
+/* 고정메뉴? 만들기 따라다니는 */
+.vertical-menu{
+	position: fixed;
+	top: 50%;
+	right: 10px;
+	transform: translateY(-50%);
+	display: flex;
+	flex-direction: column;
+	/* gap: 20px; */
+	z-index: 9999;
+}
+.vertical-menu a{
+	text-decoration: none;
+	/* background-color: #ffffff; */
+	color: black;
+	padding: 10px;
+	border-radius: 0px;
+	display: block;
+	text-align: center;
+}
+.vertical-menu a:hover{
+	/* background-color:#0056b3;  */
+}
+
+/* 캐러셀 z-index 낮추기 */
+#carouselExampleInterval{
+	position: relative;
+	z-index: 1;
+	overflow: visible;
+}
+
+.carousel-indicators{
+	position: absolute;
+	z-index: 10;
+	bottom: 0;
+	top: 400px;
+}
+.carousel-inner{
+	position: relative;
+	z-index: 2;
+}
+.carousel-item{
+	position: relative;
+	z-index: 2;
+	
+}
+.top-menu{
+	width: 100px;
+	height: auto;
+	background-color: #f6f7f7;
+	border: 1px solid #bfbfbf;
+	color: #bfbfbf;
+	border-bottom: none;
+	padding: 15px 0;
+}
+
+.top-btn { 
+	/* position: fixed;
+	bottom: 20px; 
+	left: 10px; 
+	color: white; 
+	padding: 10px; 
+	border-radius: 50%; 
+	text-align: center; 
+	display: none; 
+	cursor: pointer; */
+	background-color: gray;
+	cursor: pointer; 
+} 
+/* 메인메뉴 헤더  */
+
+header ul.main-menu{
+	list-style-type: none !important;
+}
+header .main-menu{
+	display: flex;
+	justify-content: space-between;
+}
+header .main-menu .item{
+	height: 100%;
+	flex: 1;
+}
+header .main-menu .item .item__name{
+	padding: 10px;
+	font-family: Arail, sans-serif;
+	font-size: 13px;
+	border-bottom: 3px solid white;
+	text-align: center;
+}
+header .main-menu .item {
+	flex: 1;
+	cursor: pointer;
+}
+header .main-menu .item:hover .item__name{
+	border-bottom: 3px solid  #0561da;
+	cursor: pointer;	
+}
+header .main-menu .item .item__contents{
+	width: 100%;
+	position: fixed;
+	left: 0;
+	/* display: none; */
+	opacity: 0;
+	visibility: hidden;
+}
+header .main-menu .item:hover .item__contents{
+	/* display: block; */
+	opacity: 1;
+	visibility: visible;
+	transition: visibility 0s, opacity 1.5s ease;
+}
+header .main-menu .item:hover .item__contents .contents__menu{
+	box-shadow: 0 5px 5px 0 rgba(0, 0, 0, .1);
+	
+}
+header .main-menu .item .item__contents .contents__menu{
+	background-color: white;
+	z-index: 4;
+	position: relative;
+}
+header .main-menu .item .item__contents .contents__menu > ul{
+	display: flex;
+	padding: 20px 0;
+}
+header .main-menu .item .item__contents .contents__menu > ul > li{
+	width: 220px;
+	margin-top: -10px;
+}
+header .main-menu .item .item__contents .contents__menu > ul > li h4{
+	padding: 3px 0 12px 0;
+	font-size: 14px;
+	color: black;
+}
+header .main-menu .item .item__contents .contents__menu > ul > li ul li{
+	padding: 5px 0;
+	font-size: 12px;
+	color: #0066cc;
+	cursor: pointer;
+}
+header .main-menu .item .item__contents .contents__texture{
+	height: 100px;
+	background-color: orange;
+	z-index: 4;
+	position: relative;
+}
+/* 헤더에서 a태그 없애기 */
+a.header-none{
+	text-decoration: none;
+	color: inherit;
+}
+/* 헤더의 inner클래스 */
+.inner{
+	width: 1000px;
+	margin: 0 auto;
+	position: relative;
+}
+header > .inner{
+	height: 120px;
+}
+.top-btn:hover { /* background-color: #218838; */ }
+footer{
+	background-color: #595f6a;
+	padding: 0px 80px;
+	
+}
+/* footer 설립자부분 */
+.footer-item{
+	text-align: left;
+}
+.border-bottom{
+	align-items: center;
+	justify-content: center;
+	
+}
+
+/* footer hover */
+.text-body-secondary{
+	color: white !important;
+}
+.text-body-secondary:hover {
+	text-decoration: underline;
+	color: #058bbe;
+}
+
+/* 실험용 footer 하단고정 시킼기 */
+html, body {
+      height: 100%;
+      margin: 0;
+    }
+header{
+	background-color: white;
+	z-index: 1000;
+	position: relative;
+	height: 130px;
+}
+body {
+   background-color: #f7f7f9;
+ }
+
+ .content {
+ min-height: calc(100vh - 80px);
+ padding-bottom: 80px;
+   flex: 1; /* 이 부분이 중요. content가 부족하면 footer를 아래에 고정시킴 */
+}
+
+footer {
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+}
+a{
+	text-decoration: none;
+}
+ul {
+	list-style: none;
+}
+li {
+	list-style: none;
+}
+
+
+.inner-click-child{
+	width: 33.333%;
+	height: 300px;
+	text-align: center;
+	align-content: center;
+	color: white;
+}
+/* //구글폰트적용 */
+.nanum-gothic-regular {
+  font-family: "Nanum Gothic", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+*{
+  font-family: "Nanum Gothic", Dotum;
+  font-weight: 400;
+  font-style: normal;
+	
+}
+input:focus {outline: none;}
+
+.inner-click-child:hover {
+	box-shadow: 0 0 0 3px yellow inset;	
+}
+.inner-click-child-a{
+	color: white;
+	padding: 10px 30px; border: 1px solid white; cursor: pointer; 
+}
+.inner-click-child:hover h4{
+	color: yellow;
+}
+.inner-click-child:hover .inner-click-child-a{
+	box-shadow: 0 0 0 1px yellow inset;	
+	color: yellow;
+}
+
+/* path에 hover 시 이상한 색상 입히는거 방지용 */
+.btn-secondary {
+	--bs-btn-hover-color: none;
+	--bs-btn-hover-bg: none;
+	--bs-btn-hover-border-color: none;
+}

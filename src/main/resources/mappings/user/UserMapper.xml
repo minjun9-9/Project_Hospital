@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="userDAO">
+	
+	<!-- 로그인 관련 -->
+	<!-- 로그인 -->
+    <select id="getUser" parameterType="userDoubleVO" resultType="userDoubleVO">
+        SELECT *
+        FROM USER_CLIENT
+        WHERE USER_ID = #{userId} AND USER_PW = #{userPw}
+    </select>
+	
+	<!-- 회원가입 관련 -->
+    <!--  아이디 중복 확인 -->
+	<select id="getUserById" parameterType="String" resultType="userDoubleVO">
+		SELECT USER_ID FROM USER_CLIENT WHERE USER_ID = #{userId}
+	</select>
+	
+	<!-- 14세 이상 (일반회원) 회원가입 -->
+	<insert id="insertAdultUser" parameterType="userDoubleVO">
+		INSERT INTO USER_CLIENT (
+			USER_ID, USER_PW, USER_NAME, USER_PHONE_NUM, USER_BIRTH, USER_GENDER,
+			USER_ADDRESS, USER_EMAIL, SEND_STATE, USER_IMG
+		)
+		VALUES (
+			#{userId}, #{userPw}, #{userName}, #{userPhoneNum}, #{userBirth}, #{userGender},
+			#{userAddress}, #{userEmail}, #{sendState}, #{userImg}
+		)
+	</insert>
+	
+	<!-- 14세 미만 (소아/청소년) 회원가입 -->
+	<insert id="insertYouthUser" parameterType="userDoubleVO">
+		        INSERT INTO USER_CLIENT (
+					USER_ID, USER_PW, USER_NAME, USER_PHONE_NUM, USER_BIRTH, USER_GENDER,
+					USER_ADDRESS, USER_EMAIL, SEND_STATE,USER_IMG, GUARDIAN_NAME, GUARDIAN_PHONE_NUM, GUARDIAN_EMAIL, FILEONE
+				)
+				VALUES (
+					#{userId}, #{userPw}, #{userName}, #{userPhoneNum}, #{userBirth}, #{userGender},
+					#{userAddress}, #{userEmail}, #{sendState}, #{userImg}, #{guardianName}, #{guardianPhoneNum}, #{guardianEmail}, #{fileOne}
+					)
+	</insert>
+	
+	
+	<!-- 마이페이지 관련 -->
+	<!-- 기본정보 가져오기 -->
+	<select id="getUserInfo" parameterType="int" resultType="userDoubleVO">
+		SELECT *
+		FROM USER_CLIENT
+		WHERE USER_NUM = #{userNum}
+	</select>
+	
+	<!-- 회원 예약 내역 최신 1개 -->
+	<select id="getReservationHistory" parameterType="int" resultType="reservationDTO">
+		SELECT
+		    R.USER_NUM,
+		    R.RESERV_ID,
+		    TO_CHAR(R.CREATED_AT, 'YYYY/MM/DD') AS CREATED_DATE,
+		    TO_CHAR(R.CREATED_AT, 'DY', 'NLS_DATE_LANGUAGE=KOREAN') AS CREATED_DAY,
+		    T.TIME,
+		    D.DEPT_NAME,
+		    HM.DR_NAME
+		FROM
+		    (
+		        SELECT * FROM RESERVATION
+		        WHERE USER_NUM = #{userNum}
+		        ORDER BY CREATED_AT DESC
+		    ) R
+		LEFT JOIN
+		    OPENING_TIME O ON R.OT_ID = O.OT_ID
+		LEFT JOIN
+		    TIMETABLE T ON O.TIMETABLE_ID = T.TIMETABLE_ID
+		LEFT JOIN
+		    HP_MEMBER HM ON O.DR_ID = HM.DR_ID
+		LEFT JOIN
+		    DEPT D ON HM.DEPT_ID = D.DEPT_ID
+		WHERE ROWNUM = 1
+	</select>
+	
+	<!-- 회원 진료 내역 최신 1개 -->
+	<select id="getRecordHistory" parameterType="int" resultType="recordVO">
+		SELECT
+		    T.RECORD_ID, 
+		    TO_CHAR(T.CREATED_AT, 'YYYY/MM/DD') AS CREATED_DATE,
+		    TO_CHAR(T.CREATED_AT, 'DY', 'NLS_DATE_LANGUAGE=KOREAN') AS CREATED_DAY,
+		    T.UPDATED_AT,
+		    T.DR_ID,
+		    T.RECORD_TYPE,
+		    T.TREATMENT_PERIOD,
+		    HM.DR_NAME,
+		    D.DEPT_NAME
+		FROM (
+		    SELECT R.RECORD_ID, R.CREATED_AT, R.UPDATED_AT, R.DR_ID, R.RECORD_TYPE, R.TREATMENT_PERIOD
+		    FROM RECORD R
+		    WHERE R.USER_NUM = '241227006'
+		    ORDER BY R.UPDATED_AT DESC
+		) T
+		JOIN HP_MEMBER HM ON T.DR_ID = HM.DR_ID
+		JOIN DEPT D ON HM.DEPT_ID = D.DEPT_ID
+		WHERE ROWNUM = 1
+	</select>
+	
+	
+	<!-- 회원정보 수정 / 비번변경 / 회원탈퇴에 필요한 비번 확인용도 -->
+	<select id="getPasswordById" parameterType="String" resultType="String">
+		SELECT USER_PW FROM USER_CLIENT WHERE USER_ID = #{userId}
+	</select>
+	<!-- 기본정보 수정 -->
+	<update id="updateUser" parameterType="userDoubleVO">
+		UPDATE USER_CLIENT
+		SET USER_PHONE_NUM = #{userPhoneNum},
+			   USER_EMAIL = #{userEmail}
+		WHERE USER_ID = #{userId}
+	</update>
+	
+	<!-- 비밀번호 변경 -->
+	<update id="updatePassword" parameterType="userDoubleVO">
+		UPDATE USER_CLIENT
+		SET USER_PW = #{userPw}
+		WHERE USER_ID = #{userId}
+	</update>
+	<!-- 회원 탈퇴 -->
+	<delete id="deleteUser" parameterType="String">
+		DELETE FROM USER_CLIENT WHERE USER_ID = #{userId}
+	</delete>
+	
+	
+	<!-- 회원 찾기 관련 -->
+	<!-- 아이디 찾기(휴대폰) -->
+	<select id="findIdByPhoneNum" parameterType="map" resultType="string">
+		SELECT USER_ID
+		FROM USER_CLIENT
+		WHERE USER_NAME = #{userName}
+		AND USER_PHONE_NUM = #{userPhoneNum}
+	</select>
+	
+	<!-- 아이디 찾기(이메일) -->
+	<select id="findIdByEmail" parameterType="map" resultType="string">
+		SELECT USER_ID
+		FROM USER_CLIENT
+		WHERE USER_NAME = #{userName}
+		AND USER_EMAIL = #{userEmail}
+	</select>
+	
+	<!-- 비밀번호 찾기(휴대폰) -->
+	<select id="findPwByPhoneNum" parameterType="map" resultType="string">
+		SELECT USER_PW
+		FROM USER_CLIENT
+		WHERE USER_ID = #{userId}
+		AND USER_NAME = #{userName}
+		AND USER_PHONE_NUM = #{userPhoneNum}
+	</select>
+	
+	<!-- 비밀번호 찾기(이메일) -->
+	<select id="findPwByEmail" parameterType="map" resultType="string">
+		SELECT USER_PW
+		FROM USER_CLIENT
+		WHERE USER_ID = #{userId}
+		AND USER_NAME = #{userName}
+		AND USER_EMAIL = #{userEmail}
+	</select>
+	
+</mapper>
+
+
+
+
+
+
+

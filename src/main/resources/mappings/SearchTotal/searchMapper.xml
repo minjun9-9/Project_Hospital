@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="searchMapper">
+	
+	<select id="searchQnA" resultType="com.project.hospital.search.QnaSearchDTO">
+		SELECT TITLE, CONTENT, REPLY, REPLY_AT, CREATED_AT
+		FROM QNA_BOARD
+		WHERE TITLE LIKE '%' || #{query} || '%' OR CONTENT LIKE '%'|| #{query}|| '%'
+	</select>
+	<select id="searchDoctors" resultType="com.project.hospital.doctorInfo.DoctorInfoCntDTO">
+	SELECT D.DEPT_ID, D.DEPT_NAME, HP.DR_ID, HP.FILEONE, HP.DR_POSITION, HP.DR_NAME, HP.DR_FIELD, HP.DR_EDUCATION, HP.DR_CAREER
+	FROM DEPT D, HP_MEMBER HP
+	WHERE D.DEPT_ID = HP.DEPT_ID
+	AND (HP.DR_NAME LIKE '%' || #{query} || '%'
+	OR HP.DR_FIELD LIKE '%' || #{query} || '%'
+	OR D.DEPT_NAME LIKE '%' || #{query} || '%')
+	</select>
+	
+	
+	<select id="countQnA" resultType="int">
+		SELECT COUNT(*)
+		FROM QNA_BOARD
+		WHERE TITLE LIKE '%' || #{query} || '%' OR CONTENT LIKE '%' || #{query} || '%'
+	</select>
+	<select id="countDoctors" resultType="int">
+	SELECT COUNT(*)
+	FROM DEPT D, HP_MEMBER HP
+	WHERE D.DEPT_ID = HP.DEPT_ID
+	AND (HP.DR_NAME LIKE '%' || #{query} || '%'
+	OR HP.DR_FIELD LIKE '%' || #{query} || '%'
+	OR D.DEPT_NAME LIKE '%' || #{query} || '%')
+	</select>
+</mapper>
+
+
+
+
+
+
+

@@ -1,0 +1,15 @@
+@charset "UTF-8";
+	
+	
+ #searchQuery{
+	border: 1px solid #0561da;
+	color: #0561da;
+	padding: 15px 15px;
+	width: 20%;
+}
+#searchQuery::placeholder{
+	color: #0561da;
+}
+.buttonResermain{
+	width: 3%;
+}

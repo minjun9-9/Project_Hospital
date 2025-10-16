@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="doctorCare">
+	<!-- 진료과 아이디,이름 가져오는 쿼리문 -->
+	<select id="getDeptName" resultType="departmentIdNameDTO">
+		SELECT DEPT_ID, DEPT_NAME
+		FROM DEPT
+		WHERE QUIT = '0'
+		ORDER BY DEPT_NAME
+	</select>
+	
+	<!-- 의료진 등록 쿼리문 -->
+	<insert id="insertDoctorInfo" parameterType="hpMemberVO">
+		INSERT INTO HP_MEMBER
+		    (DR_ID, DR_PW, DEPT_ID, DR_POSITION, DR_NAME, 
+		    DR_PHONE_NUM, DR_ADDRESS, DR_FIELD, DR_EDUCATION, 
+		    DR_CAREER, DR_ACADEMIC, DR_AWARDS, DR_PERSON_NUM,
+		    FILEONE, FILETWO, FILETHREE)
+		VALUES (#{drId}, #{drPw}, #{deptId}, #{drPosition}, #{drName}, 
+		        #{drPhoneNum}, #{drAddress}, #{drField}, #{drEducation},
+		        #{drCareer}, #{drAcademic}, #{drAwards}, #{drPersonNum},
+		        #{fileone}, #{filetwo}, #{filethree})
+	</insert>
+	
+	<!-- 의료진ID 중 최대 숫자값 가져오는 쿼리문 -->
+	<select id="getDrMaxIdNum" resultType="int">
+		SELECT MAX(TO_NUMBER(REGEXP_REPLACE(DR_ID, '[^0-9]'))) FROM HP_MEMBER
+	</select>
+	
+	<!-- 의료진 프로필 이미지 등록 쿼리문 -->
+	<insert id="insertDrProfileInfo" parameterType="fileStoreVO">
+		INSERT INTO FILESTORE
+		       (FILESTORE_ID, ORIGINAL_NAME, FILE_PATH)
+		VALUES (#{filestoreId}, #{originalName}, #{filePath})
+	</insert>
+	
+	<!-- @@@ 통합이후 쿼리문 수정함(삭제처리를 위함) @@@ -->
+	<!-- 의료진 테이블 페이징 처리해서 가져오는 쿼리문 -->
+	<select id="getDrInfoList" parameterType="map" resultType="doctorInfoDTO">
+	<![CDATA[
+		SELECT DR_ID, DR_PW, DEPT_ID, DR_POSITION, DR_NAME,
+		       DR_PHONE_NUM, DR_ADDRESS, DR_FIELD, DR_EDUCATION,
+		       DR_CAREER, DR_ACADEMIC, DR_AWARDS, DR_PERSON_NUM,
+		       FILEONE, FILETWO, FILETHREE, DEPT_NAME
+		FROM(SELECT ROWNUM RNUM, H.*
+		     FROM (SELECT M.DR_ID, M.DR_PW, M.DEPT_ID, M.DR_POSITION, M.DR_NAME,
+		                  M.DR_PHONE_NUM, M.DR_ADDRESS, M.DR_FIELD, M.DR_EDUCATION,
+		                  M.DR_CAREER, M.DR_ACADEMIC, M.DR_AWARDS, M.DR_PERSON_NUM,
+		                  M.FILEONE, M.FILETWO, M.FILETHREE, DEPT_NAME
+		           FROM HP_MEMBER M, DEPT D
+		           WHERE M.DEPT_ID = D.DEPT_ID
+		             AND M.QUIT = '0'
+		           ORDER BY TO_NUMBER(REGEXP_REPLACE(M.DR_ID, '[^0-9]')) DESC) H
+		     WHERE ROWNUM <= #{end})
+		WHERE RNUM >= #{begin}
+	]]>
+	</select>
+	
+	<!-- 의료진 총 row 갯수 구하는 쿼리문 -->
+	<select id="getDrCount" resultType="int">
+		SELECT COUNT(*) FROM HP_MEMBER
+	</select>
+	
+	<!-- 의료진 검색을 위한 쿼리문 -->
+	<select id="searchDrInfo" parameterType="map" resultType="doctorInfoDTO">
+		SELECT H.DR_ID, H.DR_PW, H.DEPT_ID, H.DR_POSITION, H.DR_NAME,
+		       H.DR_PHONE_NUM, H.DR_ADDRESS, H.DR_FIELD, H.DR_EDUCATION,
+		       H.DR_CAREER, H.DR_ACADEMIC, H.DR_AWARDS, H.DR_PERSON_NUM,
+		       H.FILEONE, H.FILETWO, H.FILETHREE, D.DEPT_NAME
+		FROM HP_MEMBER H, DEPT D
+		WHERE H.DEPT_ID = D.DEPT_ID
+		  AND H.QUIT = '0'
+		<choose>
+			<when test="keyword == 'name'">
+				AND H.DR_NAME LIKE '%' || UPPER(#{drName}) || '%'
+			</when>
+			<when test="keyword == 'dept'">
+				AND D.DEPT_NAME LIKE '%' || #{deptName} || '%'
+			</when>
+			<when test="keyword == 'field'">
+				AND H.DR_FIELD LIKE '%' || UPPER(#{drField}) || '%'
+			</when>
+		</choose>
+	</select>
+	
+	<!-- 의료진 이름만 가져오는 쿼리문 -->
+	<select id="searchDrName" parameterType="map" resultType="string">
+		SELECT H.DR_NAME
+		FROM HP_MEMBER H, DEPT D
+		WHERE H.DEPT_ID = D.DEPT_ID
+		  AND H.QUIT = '0'
+		<choose>
+			<when test="keyword == 'name'">
+				AND H.DR_NAME LIKE '%' || UPPER(#{drName}) || '%'
+			</when>
+			<when test="keyword == 'dept'">
+				AND D.DEPT_NAME LIKE '%' || #{deptName} || '%'
+			</when>
+			<when test="keyword == 'field'">
+				AND H.DR_FIELD LIKE '%' || UPPER(#{drField}) || '%'
+			</when>
+		</choose>
+	</select>
+	
+	<!-- 의료진 검색 수정1 -->
+	<select id="searchDrNames" parameterType="string" resultType="string">
+		SELECT DR_NAME
+		FROM HP_MEMBER
+		WHERE QUIT = '0'
+		  AND DR_NAME LIKE '%' || UPPER(#{drName}) || '%'
+	</select>
+	<!-- 의료진 검색 수정2 -->
+	<select id="searchDeptName" parameterType="string" resultType="string">
+		SELECT DEPT_NAME
+		FROM DEPT
+		WHERE QUIT = '0'
+		  AND DEPT_NAME LIKE '%' || #{deptName} || '%'
+	</select>
+	<!-- 의료진 검색 수정3 -->
+	<select id="searchDrField" parameterType="string" resultType="string">
+		SELECT DR_FIELD
+		FROM HP_MEMBER
+		WHERE QUIT = '0'
+		  AND DR_FIELD LIKE '%' || UPPER(#{drField}) || '%'
+	</select>
+	
+	<!-- 의료진 1개 검색 쿼리문 -->
+	<select id="getOneDrInfo" parameterType="string" resultType="doctorInfoDTO">
+		SELECT H.DR_ID, H.DR_PW, H.DEPT_ID, H.DR_POSITION, H.DR_NAME,
+		       H.DR_PHONE_NUM, H.DR_ADDRESS, H.DR_FIELD, H.DR_EDUCATION,
+		       H.DR_CAREER, H.DR_ACADEMIC, H.DR_AWARDS, H.DR_PERSON_NUM,
+		       H.FILEONE, H.FILETWO, H.FILETHREE, D.DEPT_NAME
+		FROM HP_MEMBER H, DEPT D
+		WHERE H.DEPT_ID = D.DEPT_ID
+		  AND H.DR_ID = #{drId}
+	</select>
+	
+	<!-- 파일테이블 데이터 가져오는 쿼리문 -->
+	<select id="getDrProFile" parameterType="string" resultType="fileStoreVO">
+		SELECT FILESTORE_ID, ORIGINAL_NAME, FILE_PATH
+		FROM FILESTORE
+		WHERE FILESTORE_ID = #{filestoreId}
+	</select>
+	
+	<!-- 통합이후 추가한 쿼리문들 -->
+	
+	<!-- 의료진 정보 업데이트 쿼리문 -->
+	<update id="updateDrInfo" parameterType="updateDrInfoDTO">
+		UPDATE HP_MEMBER 
+		SET DR_NAME = #{drName}, DR_EDUCATION = #{drEducation}, DR_PHONE_NUM = #{drPhoneNum},DEPT_ID = #{deptId}, 
+		    DR_POSITION = #{drPosition}, DR_ADDRESS = #{drAddress}, DR_FIELD = #{drField}, 
+		    DR_CAREER = #{drCareer}, DR_ACADEMIC = #{drAcademic}, DR_AWARDS = #{drAwards}
+		WHERE DR_ID = #{drId}
+	</update>
+	
+	<!-- 의료진 정보 업데이트 쿼리문 파일 컬럼 까지-->
+	<update id="updateDrInfoAndFile" parameterType="updateDrInfoDTO">
+		UPDATE HP_MEMBER 
+		SET DR_NAME = #{drName}, DR_EDUCATION = #{drEducation}, DR_PHONE_NUM = #{drPhoneNum},DEPT_ID = #{deptId}, 
+		    DR_POSITION = #{drPosition}, DR_ADDRESS = #{drAddress}, DR_FIELD = #{drField}, 
+		    DR_CAREER = #{drCareer}, DR_ACADEMIC = #{drAcademic}, DR_AWARDS = #{drAwards},
+		    FILEONE = #{fileone}, FILETWO = #{filetwo}, FILETHREE = #{filethree}
+		WHERE DR_ID = #{drId}
+	</update>
+	
+	
+	<!-- HP_MEMBER 테이블에서 파일컬럼들 가져오는 쿼리문 -->
+	<select id="getDrProFileFromHP" parameterType="string" resultType="selectDrFileIdDTO">
+		SELECT FILEONE, FILETWO, FILETHREE FROM HP_MEMBER
+		WHERE DR_ID = #{drId}
+	</select>
+	
+	<!-- 의료진 file 컬럼 update 쿼리문 -->
+	<update id="updateDrFileColumn" parameterType="map">
+		UPDATE HP_MEMBER
+		<choose>
+			<when test="fileColumn == 'one'">
+				SET FILEONE = #{fileone}
+			</when>
+			<when test="fileColumn == 'two'">
+				SET FILETWO = #{filetwo}
+			</when>
+			<when test="fileColumn == 'three'">
+				SET FILETHREE = #{filethree}
+			</when>
+		</choose> 
+		WHERE DR_ID = #{drId}
+	</update>
+	
+	<!-- filestore 테이블 update 쿼리문(의료진 프로필) -->
+	<update id="updateFileStoreTable" parameterType="map">
+		UPDATE FILESTORE 
+		SET FILESTORE_ID = #{updateFileId},
+		    ORIGINAL_NAME = #{originalName},
+		    FILE_PATH = #{filePath}
+		WHERE FILESTORE_ID = #{existFileId}
+	</update>
+	
+	<!-- filestore 테이블 delete 쿼리문(의료진 프로필) -->
+	<delete id="deleteFileStoreTable" parameterType="string">
+		DELETE FROM FILESTORE WHERE FILESTORE_ID = #{filestoreId}
+	</delete>
+	
+	<!-- HP_MEMBER 테이블 파일컬럼 update 쿼리문 -->
+	<update id="updateDrFileColumnAll" parameterType="selectDrFileIdDTO">
+		UPDATE HP_MEMBER 
+		SET FILEONE = #{fileone},
+		    FILETWO = #{filetwo},
+		    FILETHREE = #{filethree}
+		WHERE DR_ID = #{drId}
+	</update>
+	
+	<!-- FILESTORE 테이블에서 FILE_PATH만 검색 쿼리문 -->
+	<select id="getFilePath" parameterType="string" resultType="string">
+		SELECT FILE_PATH
+		FROM FILESTORE
+		WHERE FILESTORE_ID = #{filestoreId}
+	</select>
+	
+	<!-- 의료진 삭제 쿼리문(QUIT 컬럼 update) -->
+	<update id="deleteDrInfo" parameterType="string">
+		UPDATE HP_MEMBER SET QUIT = '1' WHERE DR_ID = #{drId}
+	</update>
+	
+	<!-- 해당 의료진을 진료과장으로 변경하는 쿼리문 -->
+	<update id="updateDeptHead" parameterType="map">
+		UPDATE DEPT SET DR_ID = #{drId}
+		WHERE DEPT_ID = #{deptId}
+	</update>
+	
+	<!-- 의료진 비밀번호 변경 쿼리문 -->
+	<!-- <select id="changeDrPwd" parameterType="map">
+		UPDATE HP_MEMBER SET DR_PW = #{changePwdValue}
+		WHERE DR_ID = #{drId}
+	</select> -->
+	<select id="changeDrPwd" parameterType="map">
+		UPDATE HP_MEMBER 
+		   SET DR_PW = #{changePwdValue},
+		       HASH_PW = #{hashPw}
+		 WHERE DR_ID = #{drId}
+	</select>
+	
+	<!-- 의료진 리스트 순위 오름차순으로 가져오는 쿼리문 -->
+	<select id="getDrInfoOrderByRank" resultType="doctorInfoOrderByRankDTO">
+		SELECT M.DR_ID, M.DR_NAME, D.DEPT_NAME, M.DR_POSITION, M.RANK  
+		FROM HP_MEMBER M, DEPT D
+		WHERE M.DEPT_ID = D.DEPT_ID
+		  AND M.QUIT = '0'
+		ORDER BY RANK
+	</select>
+	
+	<!-- 의료진 순위 변경 쿼리문 -->
+	<update id="updateDrRank" parameterType="updateDrRankDTO">
+		UPDATE HP_MEMBER SET RANK = #{rank} WHERE DR_ID = #{drId}
+	</update>
+	
+	
+</mapper>
+
+
+
+
+
+
+

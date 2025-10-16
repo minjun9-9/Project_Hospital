@@ -1,0 +1,28 @@
+@charset "UTF-8";
+
+.top_right {
+    position: relative;
+}
+.dropdown-menu-noBoot {
+    display: none;
+    position: absolute;
+    top: 120%;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    min-width: 150px;
+    z-index: 1000;
+}
+.dropdown-menu-noBoot a {
+    display: block;
+    padding: 10px;
+    color: #333;
+    text-decoration: none;
+}
+.dropdown-menu-noBoot a:hover {
+    background-color: #f0f0f0;
+}
+.name:hover {
+    text-decoration: underline;
+}

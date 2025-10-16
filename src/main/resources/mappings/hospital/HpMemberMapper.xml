@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hpMember">
+
+	<select id="hpMemberSearchList" parameterType="deptVO" resultType="hpMemberVO">
+		SELECT *
+		FROM HP_MEMBER
+		WHERE DEPT_ID = #{deptId}
+		AND QUIT = '0'
+		ORDER BY DR_POSITION
+	</select>
+	
+</mapper>
+
+
+
+
+
+
+

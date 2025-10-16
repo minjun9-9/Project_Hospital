@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.project.hospital.dao.OpeningTimeMapperDAO">
+	
+	<!-- drId,date를 이용해 진료시간표 조회  -->
+	<select id="getListByDrIdAndDate" parameterType="hashMap" resultType="openingTimeVO">
+	
+		SELECT * 
+		FROM OPENING_TIME
+		WHERE DR_ID = #{drId}
+		AND YEAR_DATE LIKE #{date}
+		ORDER BY YEAR_DATE, TO_NUMBER(TIMETABLE_ID)
+		
+	</select>
+	
+	<!-- 변경된 내용 insert -->
+	<insert id="insertSchedule" parameterType="hashMap">
+		
+		INSERT INTO OPENING_TIME (OT_ID, DR_ID, TIMETABLE_ID, OT_STATE, YEAR_DATE)
+		
+        <foreach collection="timeIdList" item="timeId" separator="UNION ALL">
+        	SELECT GET_SEQ, #{drId}, #{timeId}, #{status}, #{date} FROM DUAL
+        </foreach>
+	
+	</insert>
+	
+	<!-- 변경된 내용 update -->
+	<update id="updateSchedule" parameterType="hashMap">
+	
+		UPDATE OPENING_TIME SET OT_STATE = #{status}
+		WHERE DR_ID = #{drId}
+		AND YEAR_DATE = #{date}
+		AND TIMETABLE_ID IN
+		<foreach collection="timeIdList" item="timeId" open="(" separator="," close=")">
+    		#{timeId}
+		</foreach>
+	
+	</update>
+	
+</mapper>
+
+
+
+
+
+
+

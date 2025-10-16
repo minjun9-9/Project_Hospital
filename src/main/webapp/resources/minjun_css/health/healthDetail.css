@@ -1,0 +1,183 @@
+/*--- 공통 네비게이션 css ---*/
+	.dropdown-icon {
+		width: 1em;  /* 글의 폰트 크기와 동일한 너비 */
+	 	height: 1em; /* 글의 폰트 크기와 동일한 높이 */
+	 	vertical-align: middle; /* 텍스트와 수직으로 맞추기 */
+	 	right: 15px;
+	    top: 50%;
+	    margin-top: -6px;
+	    position: absolute; 
+	}
+	 
+	}
+
+	.downArrow_img {
+    	display: inline; 
+	}
+	
+	.upArrow_img {
+	    display: none;
+	}
+	
+	.dropdown span {
+		color: #333333;
+	}
+	
+	
+	/* --- 검색박스 css ---*/
+	.searchBox {
+	    display: flex; /* 입력 필드와 버튼을 한 줄에 배치 */
+	    justify-content: center; /* 가로 중앙 정렬 */
+	    align-items: center; /* 세로 중앙 정렬 */
+	    max-width: 600px; /* 최대 너비 제한 */
+	    width: 900px;
+	}
+
+	.search_input_box {
+	    flex: 1; /* 입력 필드가 가로 공간을 최대한 차지 */
+	    padding: 10px; /* 내부 여백 */
+	    font-size: 16px; /* 글자 크기 */
+	    border: 1px solid #ccc; /* 입력 필드 테두리 */
+	    outline: none; /* 포커스 시 기본 테두리 제거 */
+	    margin-right: 10px; /* 버튼과 간격 */
+	}
+	
+	.search_input_box:focus {
+	    border-color: #007bff; /* 포커스 시 테두리 색상 변경 */
+	    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* 포커스 시 그림자 효과 */
+	}
+	
+	#searchBtn {
+	    padding: 10px 20px; /* 버튼 크기 */
+	    font-size: 16px; /* 글자 크기 */
+	    color: #fff; /* 글자 색상 */
+	    background-color: #007bff; /* 버튼 배경색 */
+	    border: none; /* 버튼 테두리 제거 */
+	    cursor: pointer; /* 마우스 커서 변경 */
+	    transition: background-color 0.3s ease; /* 배경색 전환 효과 */
+	}
+	
+	#searchBtn:hover {
+	    background-color: #0056b3; /* 마우스 올릴 때 색상 */
+	}
+	
+	/*검색폼 배경*/
+	.search_wrap { 
+		display: flex;
+		margin: 20px auto; /* 상하 여백 추가 및 가운데 정렬 */
+		padding: 10px; /* 내부 여백 */
+		justify-content: center;
+		padding: 15px;
+		background-color: #EFEFF3;
+	}
+/* --- 검색박스 css ---*/
+	
+	
+	
+	/*부트스트랩 카드 목록 조정*/
+	.col {
+		height:280px;
+	}
+	
+	.card-title {
+		font-size: 17px;
+		font-weight: bold;
+	}
+	
+	
+	
+	/*더보기 버튼 */
+	.button-container {
+	    text-align: center; /* 가로 중앙 정렬 */
+	    margin-top: 30px;
+	}
+	.btn-outline-secondary {
+		display: inline-block;
+		align-items: center; /* 세로 가운데 정렬 */
+	    justify-content: center; /* 가로 가운데 정렬 */
+	    border-radius: 50px;
+	    width: 140px;
+	    gap: 8px; /* 텍스트와 화살표 간격 */
+	    border: 1px solid #ccc;
+	}
+	
+	.btn-outline-secondary:hover {
+		background-color: transparent;
+	    color: #333;
+	}
+
+
+	.btn-icon {
+		align-items: center;
+	    width: 18px; /* 아이콘 너비 */
+	    height: 18px; /* 아이콘 높이 */
+	}
+	
+	.card-img-top {
+		width: 100%;
+		height: 70%;
+		object-fit: cover;
+	}
+	
+	
+	/*검색 결과 없음*/
+	.no-data-container {
+		text-align: center; /* 가로 중앙 정렬 */
+		margin-top: 110px;
+	}
+	.no-data img {
+		width: 130px;
+		height: 130px;
+	}
+	
+	
+	/*게시글 제목*/
+	
+	.subject-area{
+		width: 1200px;
+	    align-items: center;
+	    margin: 70px auto; /* 가로 및 세로 중앙 정렬 */
+	    border-top: 1px solid #595f6a;
+	    border-bottom: 1px solid #e6e6e6;
+	    padding: 15px 30px;
+	    display: block; /* block 요소로 설정 */
+	}
+	
+	/*게시글*/
+	.article-body {
+		width: 1200px;
+	    align-items: center;
+	    margin: 70px auto; /* 가로 및 세로 중앙 정렬 */
+	    border-bottom: 1px solid #595f6a;
+	}
+	
+	
+	.subtitle {
+		text-align: center;
+	}
+	
+	/*짧은줄 넣기*/
+	.subtitle:after {
+	  content: "";
+	  display: block;
+	  width: 20px; /* 밑줄 길이 조절 */
+	  border-bottom: 2px solid #000000;
+	  margin: 35px auto;
+	}
+	
+	.subtitle h3{
+		font-weight: 700;
+	}
+	
+	.subtitle strong {
+		font-weight: 700;
+		color: #7C706B;
+	}
+	
+	/* 목록으로 버튼 */
+	#goToList {
+		display: block; /* block 요소로 설정 */
+		margin: 70px auto; /* 가로 및 세로 중앙 정렬 */
+		border-radius: 50px;
+	}
+	

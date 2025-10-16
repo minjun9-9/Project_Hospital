@@ -1,0 +1,64 @@
+@charset "UTF-8";
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    text-align: center;
+}
+
+h1 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.membership-type {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.type-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.type-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+.type-info {
+    text-align: left;
+}
+
+.type-info h2 {
+    font-size: 18px;
+    color: #333;
+    margin: 0;
+}
+
+.type-info p {
+    font-size: 14px;
+    color: #666;
+    margin: 5px 0 0;
+}
+
+.icon img {
+    width: 50px;
+    height: 50px;
+}

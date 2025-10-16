@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="reservation">
+
+	<select id="reservationList" parameterType="reservationVO" resultType="reservationVO">
+		SELECT *
+		FROM RESERVATION R, OPENING_TIME O
+		WHERE R.OT_ID = O.OT_ID
+		AND TO_DATE(YEAR_DATE) >= SYSDATE
+		AND USER_NUM = #{userNum}
+		ORDER BY TO_DATE(YEAR_DATE), TO_NUMBER(TIMETABLE_ID)
+	</select>
+	
+	<select id="reservationInsertCheck" parameterType="reservationDTO" resultType="reservationVO">
+		SELECT *
+		FROM RESERVATION R, HP_MEMBER H, OPENING_TIME O
+		WHERE R.DR_ID = H.DR_ID
+		AND R.OT_ID = O.OT_ID
+		AND R.USER_NUM = #{userNum}
+		AND TO_DATE(YEAR_DATE) >= SYSDATE
+		AND DEPT_ID = #{deptId}
+		AND YEAR_DATE = #{yearDate}
+	</select>
+	
+	<insert id="reservationInsert" parameterType="reservationVO">
+		INSERT INTO RESERVATION(RESERV_ID, RESERV_CONTENT, USER_NUM, OT_ID, DR_ID)
+					VALUES(RESERV_ID_SEQ.NEXTVAL, #{reservContent}, #{userNum}, #{otId}, #{drId})
+	</insert>
+	
+	<delete id="reservationDelete" parameterType="reservationVO">
+		DELETE FROM RESERVATION
+		WHERE RESERV_ID = #{reservId}
+	</delete>
+	
+</mapper>
+
+
+
+
+
+
+

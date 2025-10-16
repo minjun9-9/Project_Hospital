@@ -1,0 +1,802 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+    
+<div class="mask">
+		<div class="mask_con bg_w">
+			<div class="btn_x"><img src="${pageContext.request.contextPath}/resources/images/x_btn.png" alt="close"></div>
+			<p class="mask_tit">일정관리<span>가정의학과 <em>홍길동</em></span></p>
+			<div class="table_top">
+				<ul class="f_w500 f_s15 bg_13">
+					<li><span class="bul_sche sche01">정상진료</span></li>
+					<li><span class="bul_sche sche02">휴진-진료없음</span></li>
+					<li><span class="bul_sche sche03">정원초과</span></li>
+					<li><span class="bul_sche sche04">클리닉센터</span></li>
+					<li><span class="bul_sche sche05">클리닉 정원초과</span></li>
+				</ul>
+				<div class="mask_date">
+					<select name="year">
+						<option value="year01" selected>2024년</option>
+						<option value="year02">2025년</option>
+					</select>
+					<select class="month">
+						<option value="month01">01월</option>
+						<option value="month02">02월</option>
+						<option value="month03">03월</option>
+						<option value="month04">04월</option>
+						<option value="month05">05월</option>
+						<option value="month06">06월</option>
+						<option value="month07">07월</option>
+						<option value="month08">08월</option>
+						<option value="month09">09월</option>
+						<option value="month10">10월</option>
+						<option value="month11">11월</option>
+						<option value="month12" selected>12월</option>
+					</select>
+				</div>
+			</div>
+			
+			<table class="table_sty02">
+				<caption>의료진 일정관리 달력</caption>
+				<colgroup>
+					<col>
+					<col>
+					<col>
+					<col>
+					<col>
+					<col>
+					<col>
+				</colgroup>
+				<thead>
+					<tr>
+						<th class="red">일</th>
+						<th>월</th>
+						<th>화</th>
+						<th>수</th>
+						<th>목</th>
+						<th>금</th>
+						<th class="blue">토</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<div class="am">
+								<p>오전</p>
+								<select name="mask_selc">
+									<option value="mask_selc01">일괄</option>
+									<option value="mask_selc02">&#9679;</option>
+									<option value="mask_selc03">&#9678;</option>
+									<option value="mask_selc04">&#9675;</option>
+									<option value="mask_selc05">&#9650;</option>
+									<option value="mask_selc06">&#9651;</option>
+								</select>
+							</div>
+							<div class="pm">
+								<p>오후</p>
+								<select name="mask_selc">
+									<option value="mask_selc01">일괄</option>
+									<option value="mask_selc02">&#9679;</option>
+									<option value="mask_selc03">&#9678;</option>
+									<option value="mask_selc04">&#9675;</option>
+									<option value="mask_selc05">&#9650;</option>
+									<option value="mask_selc06">&#9651;</option>
+								</select>
+							</div>
+						</td>
+						<td>
+							<div class="am">
+								<p>오전</p>
+								<select name="mask_selc">
+									<option value="mask_selc01">일괄</option>
+									<option value="mask_selc02">&#9679;</option>
+									<option value="mask_selc03">&#9678;</option>
+									<option value="mask_selc04">&#9675;</option>
+									<option value="mask_selc05">&#9650;</option>
+									<option value="mask_selc06">&#9651;</option>
+								</select>
+							</div>
+							<div class="pm">
+								<p>오후</p>
+								<select name="mask_selc">
+									<option value="mask_selc01">일괄</option>
+									<option value="mask_selc02">&#9679;</option>
+									<option value="mask_selc03">&#9678;</option>
+									<option value="mask_selc04">&#9675;</option>
+									<option value="mask_selc05">&#9650;</option>
+									<option value="mask_selc06">&#9651;</option>
+								</select>
+							</div>
+						</td>
+						<td>
+							<div class="am">
+								<p>오전</p>
+								<select name="mask_selc">
+									<option value="mask_selc01">일괄</option>
+									<option value="mask_selc02">&#9679;</option>
+									<option value="mask_selc03">&#9678;</option>
+									<option value="mask_selc04">&#9675;</option>
+									<option value="mask_selc05">&#9650;</option>
+									<option value="mask_selc06">&#9651;</option>
+								</select>
+							</div>
+							<div class="pm">
+								<p>오후</p>
+								<select name="mask_selc">
+									<option value="mask_selc01">일괄</option>
+									<option value="mask_selc02">&#9679;</option>
+									<option value="mask_selc03">&#9678;</option>
+									<option value="mask_selc04">&#9675;</option>
+									<option value="mask_selc05">&#9650;</option>
+									<option value="mask_selc06">&#9651;</option>
+								</select>
+							</div>
+						</td>
+						<td>
+							<div class="am">
+								<p>오전</p>
+								<select name="mask_selc">
+									<option value="mask_selc01">일괄</option>
+									<option value="mask_selc02">&#9679;</option>
+									<option value="mask_selc03">&#9678;</option>
+									<option value="mask_selc04">&#9675;</option>
+									<option value="mask_selc05">&#9650;</option>
+									<option value="mask_selc06">&#9651;</option>
+								</select>
+							</div>
+							<div class="pm">
+								<p>오후</p>
+								<select name="mask_selc">
+									<option value="mask_selc01">일괄</option>
+									<option value="mask_selc02">&#9679;</option>
+									<option value="mask_selc03">&#9678;</option>
+									<option value="mask_selc04">&#9675;</option>
+									<option value="mask_selc05">&#9650;</option>
+									<option value="mask_selc06">&#9651;</option>
+								</select>
+							</div>
+						</td>
+						<td>
+							<div class="am">
+								<p>오전</p>
+								<select name="mask_selc">
+									<option value="mask_selc01">일괄</option>
+									<option value="mask_selc02">&#9679;</option>
+									<option value="mask_selc03">&#9678;</option>
+									<option value="mask_selc04">&#9675;</option>
+									<option value="mask_selc05">&#9650;</option>
+									<option value="mask_selc06">&#9651;</option>
+								</select>
+							</div>
+							<div class="pm">
+								<p>오후</p>
+								<select name="mask_selc">
+									<option value="mask_selc01">일괄</option>
+									<option value="mask_selc02">&#9679;</option>
+									<option value="mask_selc03">&#9678;</option>
+									<option value="mask_selc04">&#9675;</option>
+									<option value="mask_selc05">&#9650;</option>
+									<option value="mask_selc06">&#9651;</option>
+								</select>
+							</div>
+						</td>
+						<td>
+							<div class="am">
+								<p>오전</p>
+								<select name="mask_selc">
+									<option value="mask_selc01">일괄</option>
+									<option value="mask_selc02">&#9679;</option>
+									<option value="mask_selc03">&#9678;</option>
+									<option value="mask_selc04">&#9675;</option>
+									<option value="mask_selc05">&#9650;</option>
+									<option value="mask_selc06">&#9651;</option>
+								</select>
+							</div>
+							<div class="pm">
+								<p>오후</p>
+								<select name="mask_selc">
+									<option value="mask_selc01">일괄</option>
+									<option value="mask_selc02">&#9679;</option>
+									<option value="mask_selc03">&#9678;</option>
+									<option value="mask_selc04">&#9675;</option>
+									<option value="mask_selc05">&#9650;</option>
+									<option value="mask_selc06">&#9651;</option>
+								</select>
+							</div>
+						</td>
+						<td>
+							<div class="am">
+								<p>오전</p>
+								<select name="mask_selc">
+									<option value="mask_selc01">일괄</option>
+									<option value="mask_selc02">&#9679;</option>
+									<option value="mask_selc03">&#9678;</option>
+									<option value="mask_selc04">&#9675;</option>
+									<option value="mask_selc05">&#9650;</option>
+									<option value="mask_selc06">&#9651;</option>
+								</select>
+							</div>
+							<div class="pm">
+								<p>오후</p>
+								<select name="mask_selc">
+									<option value="mask_selc01">일괄</option>
+									<option value="mask_selc02">&#9679;</option>
+									<option value="mask_selc03">&#9678;</option>
+									<option value="mask_selc04">&#9675;</option>
+									<option value="mask_selc05">&#9650;</option>
+									<option value="mask_selc06">&#9651;</option>
+								</select>
+							</div>
+						</td>
+					</tr>
+					<tr class="bg_13">
+						<td class="red"></td>
+						<td></td>
+						<td></td>
+						<td>01</td>
+						<td>02</td>
+						<td>03</td>
+						<td class="blue">04</td>
+					</tr>
+					<tr>
+						<td> </td>
+						<td> </td>
+						<td> </td>
+						<td>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+						</td>						
+						<td>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+						</td>						
+						<td>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+						</td>						
+						<td>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+						</td>						
+					</tr>
+					<tr class="bg_13">
+						<td class="red">05</td>
+						<td>06</td>
+						<td>07</td>
+						<td>08</td>
+						<td>09</td>
+						<td>10</td>
+						<td class="blue">11</td>
+					</tr>
+					<tr>
+						<td>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+						</td>						
+						<td>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+						</td>						
+						<td>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+						</td>						
+						<td>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+						</td>						
+						<td>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+						</td>						
+						<td>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+						</td>						
+						<td>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+						</td>			
+					</tr>
+					<tr class="bg_13">
+						<td class="red">12</td>
+						<td>13</td>
+						<td>14</td>
+						<td>15</td>
+						<td>16</td>
+						<td>17</td>
+						<td class="blue">18</td>
+					</tr>
+					<tr>
+						<td>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+						</td>						
+						<td>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+						</td>						
+						<td>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+						</td>						
+						<td>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+						</td>						
+						<td>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+						</td>						
+						<td>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+						</td>						
+						<td>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+						</td>			
+					</tr>
+					<tr class="bg_13">
+						<td class="red">19</td>
+						<td>20</td>
+						<td>21</td>
+						<td>22</td>
+						<td>23</td>
+						<td>24</td>
+						<td class="blue">25</td>
+					</tr>
+					<tr>
+						<td>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+						</td>						
+						<td>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+						</td>						
+						<td>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+						</td>						
+						<td>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+						</td>						
+						<td>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+						</td>						
+						<td>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+						</td>						
+						<td>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+						</td>			
+					</tr>
+					<tr class="bg_13">
+						<td class="red">26</td>
+						<td>27</td>
+						<td>28</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td class="blue"></td>
+					</tr>
+					<tr>
+						<td>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+						</td>						
+						<td>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+						</td>						
+						<td>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+							<select name="mask_selc">
+								<option value="mask_selc01">일괄</option>
+								<option value="mask_selc02">&#9679;</option>
+								<option value="mask_selc03">&#9678;</option>
+								<option value="mask_selc04">&#9675;</option>
+								<option value="mask_selc05">&#9650;</option>
+								<option value="mask_selc06">&#9651;</option>
+							</select>
+						</td>						
+						<td></td>	
+						<td></td>		
+						<td></td>	
+						<td></td>
+					</tr>
+				</tbody>
+			</table>
+			<a href="#" class="mask_btn bg_2 f_s16 f_w600">적용하기</a>
+			<a href="#" class="reset c_78 f_s15 f_w400">초기화</a>
+		</div>
+	</div>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="doctorInfoDAO">
+	
+	<select id="getDoctorInfoList" resultType="com.project.hospital.doctorInfo.DoctorInfoCntDTO">
+    SELECT D.DEPT_ID, D.DEPT_NAME, HP.DR_POSITION, HP.DR_NAME, HP.DR_FIELD, HP.DR_EDUCATION, HP.DR_CAREER, HP.FILEONE, F.FILE_PATH
+    FROM DEPT D
+    JOIN HP_MEMBER HP ON D.DEPT_ID = HP.DEPT_ID
+    LEFT OUTER JOIN FILESTORE F ON HP.FILEONE = F.FILESTORE_ID
+    <where>
+        AND HP.QUIT = 0
+        <if test="drName != null and drName != ''">
+            AND HP.DR_NAME LIKE '%'|| #{drName} || '%'
+        </if>
+        <if test="deptName != null and deptName != ''">
+            AND D.DEPT_NAME LIKE '%' || #{deptName} || '%'
+        </if>
+        <if test="searchQuery != null and searchQuery != ''">
+            AND (HP.DR_NAME LIKE '%' || #{searchQuery} || '%' 
+    		OR D.DEPT_NAME LIKE '%' || #{searchQuery} || '%')
+        </if>
+    </where>
+    <if test="drName != null and drName != ''">
+        ORDER BY HP.DR_NAME
+    </if>
+    <if test="deptName != null and deptName != '' and searchQuery == null and searchQuery ==''">
+        ORDER BY D.DEPT_NAME
+    </if>
+    <if test="searchQuery != null and searchQuery != '' and searchQuery != null and searchQuery !=''">
+        ORDER BY (HP.DR_NAME || D.DEPT_NAME)
+    </if>
+</select>
+
+	<!-- 
+	<select id="getTopDoctorInfoList" resultType="com.project.hospital.doctorInfo.DoctorInfoDTO">
+	<![CDATA[
+	SELECT A.COUNT, B.DR_NAME, B.DR_POSITION, B.DR_FIELD, B.DR_EDUCATION, B.DR_CAREER, B.FILEONE, C.DEPT_NAME
+	FROM (
+	    SELECT DR_ID, COUNT(*) AS COUNT
+	    FROM RECORD
+	    GROUP BY DR_ID
+	) A
+	JOIN HP_MEMBER B ON A.DR_ID = B.DR_ID
+	JOIN DEPT C ON B.DEPT_ID = C.DEPT_ID 
+	WHERE ROWNUM <= 2
+	]]>
+	</select>
+	 -->
+	<select id="getTopDoctorInfoList" resultType="com.project.hospital.doctorInfo.DoctorInfoCntDTO">
+	<![CDATA[
+	SELECT A.COUNT, B.DR_NAME, B.DR_POSITION, B.DR_FIELD, B.DR_EDUCATION, B.DR_CAREER, B.FILEONE, C.DEPT_NAME, F.FILE_PATH
+	FROM (
+	    SELECT DR_ID, COUNT(*) AS COUNT
+	    FROM RECORD
+	    GROUP BY DR_ID
+	) A
+	JOIN HP_MEMBER B ON A.DR_ID = B.DR_ID
+	JOIN DEPT C ON B.DEPT_ID = C.DEPT_ID 
+	LEFT OUTER JOIN FILESTORE F ON B.FILEONE = F.FILESTORE_ID
+    
+    WHERE B.QUIT = 0 
+	AND ROWNUM <= 2
+	]]>
+	</select>
+	
+	 <select id="getDepartmentList" resultType="com.project.hospital.vo.DeptVO">
+        SELECT * FROM DEPT
+        WHERE HP_ID = 'SSW'
+        AND QUIT = 0
+    </select>
+</mapper>
+
+
+
+
+
+
+

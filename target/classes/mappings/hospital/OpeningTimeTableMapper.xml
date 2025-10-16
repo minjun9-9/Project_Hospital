@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="openingTimeTable">
+
+	<select id="openingTimeTableList" parameterType="openingTimeVO" resultType="openingTimeTableDTO">
+		SELECT *
+		FROM OPENING_TIME O, TIMETABLE T
+		WHERE O.TIMETABLE_ID = T.TIMETABLE_ID
+		AND DR_ID = #{drId}
+		AND YEAR_DATE = #{yearDate}
+		ORDER BY TO_NUMBER(T.TIMETABLE_ID)
+	</select>
+	
+	<select id="openingTimeTablereservationList" parameterType="reservationVO" resultType="openingTimeTableDTO">
+		SELECT *
+		FROM RESERVATION R, OPENING_TIME O, TIMETABLE T
+		WHERE R.OT_ID = O.OT_ID
+		AND O.TIMETABLE_ID = T.TIMETABLE_ID
+		AND R.USER_NUM = #{userNum}
+		ORDER BY TO_NUMBER(R.OT_ID) DESC
+	</select>
+	
+	<select id="openingTimeTableOne" parameterType="openingTimeVO" resultType="openingTimeTableDTO">
+		SELECT *
+		FROM OPENING_TIME O, TIMETABLE T
+		WHERE O.TIMETABLE_ID = T.TIMETABLE_ID
+		AND OT_ID = #{otId}
+	</select>
+	
+</mapper>
+
+
+
+
+
+
+

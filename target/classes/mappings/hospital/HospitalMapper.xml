@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hospital">
+
+	<select id="hospitalList" resultType="hospitalVO">
+		SELECT *
+		FROM HOSPITAL
+		ORDER BY HP_ID
+	</select>
+	
+	<select id="hospitalSearchList" resultType="hospitalVO">
+		SELECT *
+		FROM HOSPITAL
+		WHERE QUIT = '0'
+		ORDER BY HP_ID
+	</select>
+	
+	<select id="hospitalSearchListRegion" parameterType="hospitalVO" resultType="hospitalVO">
+		SELECT *
+		FROM HOSPITAL
+		WHERE HP_REGION = #{hpRegion}
+		AND QUIT = '0'
+		ORDER BY HP_ID
+	</select>
+	
+	<select id="hospitalSearchListName" parameterType="hospitalVO" resultType="hospitalVO">
+		SELECT *
+		FROM HOSPITAL
+		WHERE HP_NAME LIKE '%' || #{hpName} || '%'
+		ORDER BY HP_ID
+	</select>
+	
+	<select id="hospitalOne" parameterType="hospitalVO" resultType="hospitalVO">
+		SELECT *
+		FROM HOSPITAL
+        WHERE HP_ID = #{hpId}
+	</select>
+	
+	<insert id="hospitalInsert" parameterType="hospitalVO">
+		INSERT INTO HOSPITAL(HP_ID, HP_NAME, HP_ADDRESS, HP_NUMBER, HP_REGION)
+					VALUES(#{hpId}, #{hpName}, #{hpAddress}, #{hpNumber}, #{hpRegion})
+	</insert>
+	
+	<update id="hospitalUpdate" parameterType="hospitalVO">
+		UPDATE HOSPITAL
+		   SET HP_NAME = #{hpName},
+			   HP_ADDRESS = #{hpAddress},
+			   HP_NUMBER = #{hpNumber},
+			   HP_REGION = #{hpRegion}
+		 WHERE HP_ID = #{hpId}
+	</update>
+	
+	<update id="hospitalDelete" parameterType="hospitalVO">
+		UPDATE HOSPITAL
+		   SET QUIT = '1'
+		 WHERE HP_ID = #{hpId}
+	</update>
+	
+	<update id="hospitalAccess" parameterType="hospitalVO">
+		UPDATE HOSPITAL
+		   SET QUIT = '0'
+		 WHERE HP_ID = #{hpId}
+	</update>
+	
+</mapper>
+
+
+
+
+
+
+

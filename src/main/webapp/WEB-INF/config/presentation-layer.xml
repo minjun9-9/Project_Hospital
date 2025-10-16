@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+	<!-- 컨트롤러(@Controller)가 위치한 패키지 스캔해서 객체 생성 -->
+	<context:component-scan base-package="com.project.hospital.view" />
+
+	<!-- 어노테이션 설정 방식을 사용 + 기타 다양한 객체 생성 -->
+	<mvc:annotation-driven />
+
+	<!-- 파일업로드 관련 설정(MultipartResolver) 
+		Resolver 명칭이 있는 객체명은 대체로 정해져 있음-->
+	<bean id="multipartResolver" 
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="10000000" />
+	</bean>
+
+	<!-- 정적 데이터 사용 위치 설정 -->
+	<mvc:resources mapping="/resources/**" location="/resources/" />
+	
+	<!-- 업로드 파일 읽어오기 위한 설정 -->
+	<!-- C:/MyStudy/Project_Hospital/Images/Dr_Profile -->
+	<mvc:resources mapping="/images/DrProfiles/**" 
+	location="file:/C:/MyStudy/Project_Hospital/Images/Dr_Profile/,
+		      file:/C:/MyStudy/Project_Hospital/Images/Department/
+		      " />
+	<mvc:resources mapping="/Project_Hospital_uploadedFiles/**" location="file:/C:/MyStudy/Project_Hospital/" />
+	
+	<!-- 스프링 ViewResolver 등록 -->
+	<bean id="viewResolver" 
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+	
+	
+</beans>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="openingTime">
+	
+	<select id="openingTimeList" parameterType="openingTimeVO" resultType="String">
+		SELECT YEAR_DATE
+		FROM OPENING_TIME
+		WHERE OT_STATE = '정상진료'
+		AND DR_ID = #{drId}
+	</select>
+	
+	<update id="openingTimeImpossibleUpdate" parameterType="String">
+		UPDATE OPENING_TIME
+		   SET OT_STATE = '정원초과'
+		 WHERE OT_ID = #{otId}
+	</update>
+	
+	<update id="openingTimePossibleUpdate" parameterType="String">
+		UPDATE OPENING_TIME
+		   SET OT_STATE = '정상진료'
+		 WHERE OT_ID = #{otId}
+	</update>
+	
+</mapper>
+
+
+
+
+
+
+

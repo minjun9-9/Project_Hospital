@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.project.hospital.dao.TimetableDAO">
+	
+	<!-- 타임테이블 전체 데이터 조회 -->
+	<select id="getList" resultType="timetableVO">
+	
+		SELECT * FROM TIMETABLE
+		ORDER BY TIME_TYPE, TO_NUMBER(TIMETABLE_ID)
+		
+	</select>
+	
+	<select id="findReservSchedule" parameterType="HashMap" resultType="timeDateDTO">
+		
+		SELECT T.TIME, OTR.YEAR_DATE
+		FROM TIMETABLE T, (SELECT O.OT_ID, O.TIMETABLE_ID, O.YEAR_DATE
+		                    FROM OPENING_TIME O, (SELECT OT_ID
+		                                          FROM RESERVATION
+		                                          WHERE USER_NUM = #{userNum}) R
+		                    WHERE O.OT_ID = R.OT_ID
+		                    AND YEAR_DATE LIKE #{date}
+		                    ORDER BY YEAR_DATE, TO_NUMBER(TIMETABLE_ID)) OTR
+		WHERE T.TIMETABLE_ID = OTR.TIMETABLE_ID
+		ORDER BY T.TIME, OTR.YEAR_DATE
+	
+	</select>
+	
+	
+</mapper>
+
+
+
+
+
+
+

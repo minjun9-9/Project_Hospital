@@ -1,0 +1,48 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+
+<div class="top_right" style="width: 150px;">
+	<a href="#" class="option"><img src="${pageContext.request.contextPath }/resources/images/top_option.png" alt="option"></a>
+	<a>
+		<!-- title -->
+		<span class="name c_2 f_s15" style="display: block; padding-top: 12px; cursor: pointer;">${resultDto.adminName}${resultDto.drName}님</span>
+	</a>
+
+	<!-- 드롭다운 옵션 -->
+	<div id="dropdownMenu" class="dropdown-menu-noBoot">
+		<a href="${pageContext.request.contextPath }/doctor/doctorPwChange">비밀번호 변경</a>
+		<a href="#">개인정보 변경</a>
+		<a onclick='logout()' style="cursor: pointer;">로그아웃</a>
+	</div>
+</div>
+
+<script>
+
+	window.addEventListener("load", function(){
+	
+		const dropdownMenuDiv = document.querySelector("#dropdownMenu");
+		const loginName = document.querySelector(".name");
+	
+		loginName.addEventListener("click", (event) => {
+			event.preventDefault();
+			dropdownMenuDiv.style.display = (dropdownMenuDiv.style.display === "block") ? "none" : "block";
+		});
+		
+		document.addEventListener("click", (event) => {
+			dropdownMenuDiv
+			if (!dropdownMenuDiv.contains(event.target) && event.target !== loginName) {
+				dropdownMenuDiv.style.display = "none";
+			}
+		})
+	});
+
+	//로그아웃
+	function logout(){
+	
+	    // 로그인 페이지로
+	    console.log('여기까지 오니?');
+	    location.assign('/hospital/adminDoctorMain/loginPage');
+	}
+</script>
